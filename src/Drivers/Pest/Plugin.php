@@ -68,9 +68,12 @@ final class Plugin implements AddsOutput, HandlesArguments, Terminable
 
         $execution = Execution::current();
 
-        $captured = trim(CaptureFilter::output());
-
-        $execution->restoreStdout();
+        if (PHP_OS_FAMILY === 'Windows') {
+            $captured = trim((string) ob_get_clean());
+        } else {
+            $captured = trim(CaptureFilter::output());
+            $execution->restoreStdout();
+        }
 
         if ($captured !== '') {
             $captured = (string) preg_replace('/\e\[[0-9;]*m/', '', $captured);

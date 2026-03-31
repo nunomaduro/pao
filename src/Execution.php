@@ -78,6 +78,14 @@ final class Execution
 
     public function restoreStdout(): void
     {
+        if (PHP_OS_FAMILY === 'Windows') {
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+
+            return;
+        }
+
         if (is_resource($this->filter)) {
             stream_filter_remove($this->filter);
 
@@ -87,6 +95,10 @@ final class Execution
 
     public function captureStdout(): void
     {
+        if (PHP_OS_FAMILY === 'Windows') {
+            return;
+        }
+
         $this->restoreStdout();
 
         if (! in_array('agent_output_capture', stream_get_filters(), true)) {

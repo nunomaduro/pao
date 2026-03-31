@@ -26,12 +26,16 @@ abstract class Starter implements Driver
     {
         $execution = Execution::current();
 
-        $execution->filter = stream_filter_append(STDOUT, 'agent_output_null', STREAM_FILTER_WRITE) ?: null;
+        if (PHP_OS_FAMILY === 'Windows') {
+            ob_start();
+        } else {
+            $execution->filter = stream_filter_append(STDOUT, 'agent_output_null', STREAM_FILTER_WRITE) ?: null;
+        }
     }
 
     protected function saveStdout(): void
     {
-        Execution::current()->stdout = @fopen('php://stdout', 'w') ?: null;
+        Execution::current()->stdout = @fopen('php://stdout', 'w') ?: STDOUT;
     }
 
     /**
