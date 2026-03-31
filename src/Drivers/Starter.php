@@ -33,7 +33,9 @@ abstract class Starter implements Driver
     {
         $execution = Execution::current();
 
-        $execution->stdout = fopen('php://stdout', 'w') ?: null;
+        $path = PHP_OS_FAMILY === 'Windows' ? 'CONOUT$' : 'php://stdout';
+
+        $execution->stdout = @fopen($path, 'w') ?: null;
     }
 
     /**

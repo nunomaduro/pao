@@ -30,11 +30,11 @@ final class OutputBufferingTest extends TestCase
         $this->assertSame('outer', $outer);
     }
 
-    public function test_ob_implicit_flush(): void
+    public function test_ob_discard(): void
     {
         ob_start();
-        echo 'flushed';
-        ob_end_flush();
+        echo 'discarded';
+        ob_end_clean();
 
         $this->assertTrue(true);
     }

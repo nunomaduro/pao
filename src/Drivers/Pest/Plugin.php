@@ -70,6 +70,8 @@ final class Plugin implements AddsOutput, HandlesArguments, Terminable
 
         $captured = trim(CaptureFilter::output());
 
+        $execution->restoreStdout();
+
         if ($captured !== '') {
             $captured = (string) preg_replace('/\e\[[0-9;]*m/', '', $captured);
             $captured = (string) preg_replace('/[─━│┌┐└┘├┤┬┴┼▓░▒═║╔╗╚╝╠╣╦╩╬]+/', '', $captured);
@@ -83,8 +85,6 @@ final class Plugin implements AddsOutput, HandlesArguments, Terminable
                 $this->result['output'] = $lines;
             }
         }
-
-        $execution->restoreStdout();
 
         fwrite($execution->stdout(), json_encode($this->result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR).PHP_EOL);
 

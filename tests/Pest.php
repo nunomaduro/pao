@@ -29,12 +29,6 @@ function decodeOutput(Process $process): mixed
 {
     $raw = $process->getOutput();
 
-    $jsonStart = strpos($raw, '{');
-
-    if ($jsonStart !== false && $jsonStart > 0) {
-        $raw = substr($raw, $jsonStart);
-    }
-
     $decoded = json_decode(trim($raw), associative: true);
 
     if (json_last_error() !== JSON_ERROR_NONE) {
