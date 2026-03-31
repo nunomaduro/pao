@@ -10,7 +10,6 @@ use ParaTest\Options;
 use ParaTest\RunnerInterface;
 use ParaTest\WrapperRunner\WrapperRunner as ParatestWrapperRunner;
 use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @internal
@@ -23,7 +22,6 @@ final readonly class WrapperRunner implements RunnerInterface
 
     public function __construct(
         Options $options,
-        private OutputInterface $output,
     ) {
         $this->runner = new ParatestWrapperRunner($options, new NullOutput);
     }
