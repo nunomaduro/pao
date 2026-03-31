@@ -55,6 +55,17 @@ final class Plugin implements AddsOutput, HandlesArguments, Terminable
 
         $this->result = $execution->result();
 
+        if (in_array('--parallel', $_SERVER['argv'] ?? [], true)) {
+            $execution->restoreStdout();
+
+            if ($this->result !== null) {
+                fwrite(STDOUT, json_encode($this->result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR).PHP_EOL);
+                $this->result = null;
+            }
+
+            return $exitCode;
+        }
+
         $execution->captureStdout();
 
         return $exitCode;

@@ -27,7 +27,6 @@ function runWith(string $binary, string $filter, bool $withAgent = true, array $
 
 function cleanOutput(string $raw): string
 {
-    // Strip \r (Windows CRLF) and ANSI escape codes
     $raw = str_replace("\r", '', $raw);
 
     return (string) preg_replace('/\e\[[0-9;]*m/', '', trim($raw));
@@ -65,8 +64,8 @@ function decodeOutput(Process $process): mixed
             sprintf('Command: %s%s', $command, PHP_EOL).
             sprintf('Exit code: %s%s', $exitCode, PHP_EOL).
             sprintf('OS: %s%s', PHP_OS_FAMILY, PHP_EOL).
-            sprintf('pest-plugins.json: %s%s', $plugins, PHP_EOL).
-            'STDOUT: '.substr($process->getOutput(), 0, 1000)."\n".
+            sprintf('Raw output length: %s%s', strlen($process->getOutput()), PHP_EOL).
+            'STDOUT: '.substr($process->getOutput(), 0, 2000)."\n".
             'STDERR: '.substr($stderr, 0, 500)
         );
     }
