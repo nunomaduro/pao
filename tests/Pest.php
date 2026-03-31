@@ -25,9 +25,17 @@ function runWith(string $binary, string $filter, bool $withAgent = true, array $
     return $process;
 }
 
+function cleanOutput(string $raw): string
+{
+    // Strip \r (Windows CRLF) and ANSI escape codes
+    $raw = str_replace("\r", '', $raw);
+
+    return (string) preg_replace('/\e\[[0-9;]*m/', '', trim($raw));
+}
+
 function decodeFromMixedOutput(Process $process): mixed
 {
-    $raw = $process->getOutput();
+    $raw = cleanOutput($process->getOutput());
 
     $jsonStart = strpos($raw, '{"result":');
 
@@ -35,14 +43,14 @@ function decodeFromMixedOutput(Process $process): mixed
         $raw = substr($raw, $jsonStart);
     }
 
-    return json_decode(trim($raw), associative: true, flags: JSON_THROW_ON_ERROR);
+    return json_decode($raw, associative: true, flags: JSON_THROW_ON_ERROR);
 }
 
 function decodeOutput(Process $process): mixed
 {
-    $raw = $process->getOutput();
+    $raw = cleanOutput($process->getOutput());
 
-    $decoded = json_decode(trim($raw), associative: true);
+    $decoded = json_decode($raw, associative: true);
 
     if ($decoded === null) {
         $stderr = $process->getErrorOutput();
