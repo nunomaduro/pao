@@ -1,0 +1,15 @@
+/.phpunit.result.cache
+.phpunit.cache
+/.php-cs-fixer.cache
+/.php-cs-fixer.php
+/composer.lock
+/phpunit.xml
+/vendor/
+/.idea/
+*.swp
+*.swo
+/.ai/
+/playground-laravel
+/playground-symfony
+
+.DS_Store

@@ -1,0 +1,50 @@
+name: Tests
+
+on: ['push', 'pull_request']
+
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        php: ['8.3', '8.4', '8.5']
+        pest: ['4', '5']
+        dependency-version: [prefer-lowest, prefer-stable]
+        exclude:
+          - php: '8.3'
+            pest: '5'
+
+    name: Tests P${{ matrix.php }} - Pest ${{ matrix.pest }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}
+    continue-on-error: ${{ matrix.pest == '5' }}
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: dom, mbstring, zip
+        coverage: pcov
+
+    - name: Get Composer cache directory
+      id: composer-cache
+      shell: bash
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache dependencies
+      uses: actions/cache@v5
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: dependencies-php-${{ matrix.php }}-pest-${{ matrix.pest }}-os-${{ matrix.os }}-version-${{ matrix.dependency-version }}-composer-${{ hashFiles('composer.json') }}
+        restore-keys: dependencies-php-${{ matrix.php }}-pest-${{ matrix.pest }}-os-${{ matrix.os }}-version-${{ matrix.dependency-version }}-composer-
+
+    - name: Install Composer dependencies
+      run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist --with "pestphp/pest:${{ matrix.pest }}.*"
+
+    - name: Unit Tests
+      run: composer test:unit

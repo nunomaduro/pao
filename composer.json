@@ -1,0 +1,76 @@
+{
+    "name": "nunomaduro/pao",
+    "description": "Agent-optimized output for PHP testing tools",
+    "keywords": ["php", "phpunit", "pest", "agent", "testing", "json"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nuno Maduro",
+            "email": "enunomaduro@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "ext-simplexml": "*",
+        "shipfastlabs/agent-detector": "^1.1.0"
+    },
+    "require-dev": {
+        "brianium/paratest": "^7.20",
+        "laravel/pint": "^1.29.0",
+        "pestphp/pest": "^4.4.3 || ^5.0.0",
+        "pestphp/pest-plugin-type-coverage": "^4.0.3 || ^5.0.0",
+        "phpstan/phpstan": "^2.1.45",
+        "rector/rector": "^2.3.9",
+        "symfony/process": "^7.4.5 || ^8.0.5",
+        "symfony/var-dumper": "^7.4.6 || ^8.0.6"
+    },
+    "conflict": {
+        "phpunit/phpunit": "<12.5.14 || >=13.0.0 <13.0.5 || >=14.0",
+        "pestphp/pest": "<4.4.3 || >=6.0"
+    },
+    "autoload": {
+        "files": [
+            "src/Autoload.php"
+        ],
+        "psr-4": {
+            "Pao\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "pest": {
+            "plugins": [
+                "Pao\\Drivers\\Pest\\Plugin"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "lint": "pint",
+        "refactor": "rector",
+        "test:type-coverage": "pest --type-coverage --min=100",
+        "test:lint": "pint --test",
+        "test:unit": "pest --coverage --exactly=100",
+        "test:types": "phpstan",
+        "test:refactor": "rector --dry-run",
+        "test": [
+            "@test:lint",
+            "@test:type-coverage",
+            "@test:unit",
+            "@test:types",
+            "@test:refactor"
+        ]
+    }
+}
