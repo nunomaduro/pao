@@ -1,22 +1,8 @@
 <?php
 
 declare(strict_types=1);
-use Symfony\Component\Process\Process;
 
 $pestStdoutConfig = 'tests/Fixtures/Pest/phpunit.xml';
-
-function decodeFromMixedOutput(Process $process): mixed
-{
-    $raw = $process->getOutput();
-
-    $jsonStart = strpos($raw, '{"result":');
-
-    if ($jsonStart !== false && $jsonStart > 0) {
-        $raw = substr($raw, $jsonStart);
-    }
-
-    return json_decode(trim($raw), associative: true, flags: JSON_THROW_ON_ERROR);
-}
 
 it('phpunit produces valid json despite fwrite stdout noise', function (): void {
     $output = decodeFromMixedOutput(runWith('phpunit', 'StdoutStressTest'));

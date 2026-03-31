@@ -24,13 +24,11 @@ abstract class Starter implements Driver
 
     protected function silenceStdout(): void
     {
-        $execution = Execution::current();
-
         if (PHP_OS_FAMILY === 'Windows') {
-            ob_start();
-        } else {
-            $execution->filter = stream_filter_append(STDOUT, 'agent_output_null', STREAM_FILTER_WRITE) ?: null;
+            return;
         }
+
+        Execution::current()->filter = stream_filter_append(STDOUT, 'agent_output_null', STREAM_FILTER_WRITE) ?: null;
     }
 
     protected function saveStdout(): void

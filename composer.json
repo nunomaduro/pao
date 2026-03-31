@@ -25,6 +25,7 @@
         "symfony/var-dumper": "^7.4.6 || ^8.0.6"
     },
     "conflict": {
+        "nunomaduro/collision": "<8.9.2",
         "phpunit/phpunit": "<12.5.14 || >=13.0.0 <13.0.5 || >=14.0",
         "pestphp/pest": "<4.4.3 || >=6.0"
     },

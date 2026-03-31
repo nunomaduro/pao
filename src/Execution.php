@@ -78,14 +78,6 @@ final class Execution
 
     public function restoreStdout(): void
     {
-        if (PHP_OS_FAMILY === 'Windows') {
-            while (ob_get_level() > 0) {
-                ob_end_clean();
-            }
-
-            return;
-        }
-
         if (is_resource($this->filter)) {
             stream_filter_remove($this->filter);
 

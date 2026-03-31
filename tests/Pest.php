@@ -25,13 +25,26 @@ function runWith(string $binary, string $filter, bool $withAgent = true, array $
     return $process;
 }
 
+function decodeFromMixedOutput(Process $process): mixed
+{
+    $raw = $process->getOutput();
+
+    $jsonStart = strpos($raw, '{"result":');
+
+    if ($jsonStart !== false && $jsonStart > 0) {
+        $raw = substr($raw, $jsonStart);
+    }
+
+    return json_decode(trim($raw), associative: true, flags: JSON_THROW_ON_ERROR);
+}
+
 function decodeOutput(Process $process): mixed
 {
     $raw = $process->getOutput();
 
     $decoded = json_decode(trim($raw), associative: true);
 
-    if (json_last_error() !== JSON_ERROR_NONE) {
+    if ($decoded === null) {
         $stderr = $process->getErrorOutput();
         $exitCode = $process->getExitCode();
         $command = $process->getCommandLine();
