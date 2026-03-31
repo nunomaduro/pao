@@ -41,7 +41,7 @@ final readonly class WrapperRunner implements RunnerInterface
         $result = $execution->result();
 
         if ($result !== null) {
-            $this->output->writeln(json_encode($result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            fwrite(STDOUT, json_encode($result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR).PHP_EOL);
         }
 
         return $exitCode;
