@@ -1,3 +1,9 @@
+> 🚧 **Work in progress** — PAO is under active development. Want to try it early? Install from dev:
+> ```bash
+> composer require nunomaduro/pao:dev-main --dev
+> ```
+> Then just run your tests with any AI agent — the output will be JSON automatically. Feedback and bug reports are welcome at [github.com/nunomaduro/pao/issues](https://github.com/nunomaduro/pao/issues).
+
 <p align="center">
     <img src="https://raw.githubusercontent.com/nunomaduro/pao/main/art/logo.png" alt="PAO" width="300">
     <p align="center">
