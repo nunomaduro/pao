@@ -67,11 +67,11 @@
         "test:types": "phpstan",
         "test:refactor": "rector --dry-run",
         "test": [
-            "@test:refactor"
+            "@test:refactor",
             "@test:lint",
             "@test:type-coverage",
             "@test:types",
-            "@test:unit",
+            "@test:unit"
         ]
     }
 }
