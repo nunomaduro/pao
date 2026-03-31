@@ -13,6 +13,7 @@ return RectorConfig::configure()
     ->withSkip([
         AddOverrideAttributeToOverriddenMethodsRector::class,
         __DIR__.'/tests/Fixtures',
+        __DIR__.'/src/UserFilters',
     ])
     ->withPreparedSets(
         deadCode: true,
