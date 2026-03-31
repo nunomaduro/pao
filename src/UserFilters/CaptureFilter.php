@@ -22,6 +22,7 @@ final class CaptureFilter extends php_user_filter
      */
     public function filter($in, $out, &$consumed, bool $closing): int // @pest-ignore-type
     {
+        /** @var object{data: string, datalen: int}|null $bucket */
         while ($bucket = stream_bucket_make_writeable($in)) {
             $consumed += $bucket->datalen;
             self::$captured .= $bucket->data;
