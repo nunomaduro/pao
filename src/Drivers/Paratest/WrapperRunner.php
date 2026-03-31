@@ -19,13 +19,13 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @rector-ignore
  */
-final class WrapperRunner implements RunnerInterface
+final readonly class WrapperRunner implements RunnerInterface
 {
-    private readonly ParatestWrapperRunner $runner;
+    private ParatestWrapperRunner $runner;
 
-    public function __construct(// @phpstan-ignore constructor.unusedParameter
+    public function __construct(
         Options $options,
-        private readonly OutputInterface $output,
+        private OutputInterface $output,
     ) {
         $this->runner = new ParatestWrapperRunner($options, new NullOutput);
     }
