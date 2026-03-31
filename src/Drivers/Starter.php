@@ -31,11 +31,7 @@ abstract class Starter implements Driver
 
     protected function saveStdout(): void
     {
-        $execution = Execution::current();
-
-        $path = PHP_OS_FAMILY === 'Windows' ? 'CONOUT$' : 'php://stdout';
-
-        $execution->stdout = @fopen($path, 'w') ?: null;
+        Execution::current()->stdout = @fopen('php://stdout', 'w') ?: null;
     }
 
     /**
