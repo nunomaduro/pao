@@ -1,3 +1,9 @@
+<p align="center">
+    <a href="https://youtu.be/aOA1m9dFEww" target="_blank">
+        <img src="/art/video.jpg" alt="Overview PAO" style="width:70%;">
+    </a>
+</p>
+
 > 🚧 **Work in progress** — PAO is under active development. Want to try it early? Install from dev:
 > ```bash
 > composer require nunomaduro/pao:dev-main --dev
