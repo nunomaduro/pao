@@ -86,7 +86,11 @@ final class Plugin implements AddsOutput, HandlesArguments, Terminable
             }
         }
 
-        fwrite(STDOUT, json_encode($this->result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR).PHP_EOL);
+        $json = json_encode($this->result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR).PHP_EOL;
+
+        if (fwrite(STDOUT, $json) === false) {
+            fwrite(STDERR, $json);
+        }
 
         $this->result = null;
     }
