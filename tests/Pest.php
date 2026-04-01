@@ -52,18 +52,6 @@ function decodeOutput(Process $process): mixed
     $decoded = json_decode($raw, associative: true);
 
     if ($decoded === null) {
-        $jsonStart = strpos($raw, '{"result":');
-        if ($jsonStart !== false) {
-            $decoded = json_decode(substr($raw, $jsonStart), associative: true);
-        }
-    }
-
-    if ($decoded === null) {
-        $raw = cleanOutput($process->getErrorOutput());
-        $decoded = json_decode($raw, associative: true);
-    }
-
-    if ($decoded === null) {
         $stderr = $process->getErrorOutput();
         $exitCode = $process->getExitCode();
         $command = $process->getCommandLine();
