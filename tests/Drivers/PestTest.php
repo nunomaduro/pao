@@ -90,7 +90,7 @@ it('outputs json for dependent tests', function (): void {
 });
 
 it('outputs json for tests with unexpected output', function (): void {
-    $output = decodeOutput(runWith('pest', 'UnexpectedOutputTest'));
+    $output = decodeFromMixedOutput(runWith('pest', 'UnexpectedOutputTest'));
 
     expect($output['result'])->toBe('passed')
         ->and($output['tests'])->toBe(1);

@@ -33,7 +33,7 @@ abstract class Starter implements Driver
     {
         $execution = Execution::current();
 
-        $execution->stdout = fopen('php://stdout', 'w') ?: null;
+        $execution->stdout = fopen('php://stdout', 'w') ?: STDOUT;
     }
 
     /**

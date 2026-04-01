@@ -19,12 +19,13 @@
         "laravel/pint": "^1.29.0",
         "pestphp/pest": "^4.4.3 || ^5.0.0",
         "pestphp/pest-plugin-type-coverage": "^4.0.3 || ^5.0.0",
-        "phpstan/phpstan": "^2.1.45",
+        "phpstan/phpstan": "^2.1.46",
         "rector/rector": "^2.3.9",
-        "symfony/process": "^7.4.5 || ^8.0.5",
-        "symfony/var-dumper": "^7.4.6 || ^8.0.6"
+        "symfony/process": "^7.4.5 || ^8.0.8",
+        "symfony/var-dumper": "^7.4.6 || ^8.0.8"
     },
     "conflict": {
+        "nunomaduro/collision": "<8.9.2",
         "phpunit/phpunit": "<12.5.14 || >=13.0.0 <13.0.5 || >=14.0",
         "pestphp/pest": "<4.4.3 || >=6.0"
     },
@@ -62,15 +63,15 @@
         "refactor": "rector",
         "test:type-coverage": "pest --type-coverage --min=100",
         "test:lint": "pint --test",
-        "test:unit": "pest --coverage --exactly=100",
+        "test:unit": "pest --parallel --coverage --exactly=100",
         "test:types": "phpstan",
         "test:refactor": "rector --dry-run",
         "test": [
+            "@test:refactor",
             "@test:lint",
             "@test:type-coverage",
-            "@test:unit",
             "@test:types",
-            "@test:refactor"
+            "@test:unit"
         ]
     }
 }

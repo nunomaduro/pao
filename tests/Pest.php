@@ -25,19 +25,40 @@ function runWith(string $binary, string $filter, bool $withAgent = true, array $
     return $process;
 }
 
-function decodeOutput(Process $process): mixed
+function cleanOutput(string $raw): string
 {
-    $raw = $process->getOutput();
+    $raw = str_replace("\r", '', $raw);
 
-    $jsonStart = strpos($raw, '{');
+    return (string) preg_replace('/\e\[[0-9;]*m/', '', trim($raw));
+}
+
+function decodeFromMixedOutput(Process $process): mixed
+{
+    $raw = cleanOutput($process->getOutput());
+
+    $jsonStart = strpos($raw, '{"result":');
 
     if ($jsonStart !== false && $jsonStart > 0) {
         $raw = substr($raw, $jsonStart);
     }
 
-    $decoded = json_decode(trim($raw), associative: true);
+    return json_decode($raw, associative: true, flags: JSON_THROW_ON_ERROR);
+}
 
-    if (json_last_error() !== JSON_ERROR_NONE) {
+function decodeOutput(Process $process): mixed
+{
+    $raw = cleanOutput($process->getOutput());
+
+    $decoded = json_decode($raw, associative: true);
+
+    if ($decoded === null) {
+        $jsonStart = strpos($raw, '{"result":');
+        if ($jsonStart !== false) {
+            $decoded = json_decode(substr($raw, $jsonStart), associative: true);
+        }
+    }
+
+    if ($decoded === null) {
         $stderr = $process->getErrorOutput();
         $exitCode = $process->getExitCode();
         $command = $process->getCommandLine();
@@ -50,8 +71,8 @@ function decodeOutput(Process $process): mixed
             sprintf('Command: %s%s', $command, PHP_EOL).
             sprintf('Exit code: %s%s', $exitCode, PHP_EOL).
             sprintf('OS: %s%s', PHP_OS_FAMILY, PHP_EOL).
-            sprintf('pest-plugins.json: %s%s', $plugins, PHP_EOL).
-            'STDOUT: '.substr($process->getOutput(), 0, 1000)."\n".
+            sprintf('Raw output length: %s%s', strlen($process->getOutput()), PHP_EOL).
+            'STDOUT: '.substr($process->getOutput(), 0, 2000)."\n".
             'STDERR: '.substr($stderr, 0, 500)
         );
     }

@@ -21,4 +21,6 @@ if (! $agent->isAgent) {
     return;
 }
 
+unset($_SERVER['COLLISION_PRINTER']);
+
 Execution::start($agent, $argv);
