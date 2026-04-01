@@ -24,10 +24,6 @@ abstract class Starter implements Driver
 
     protected function silenceStdout(): void
     {
-        if (PHP_OS_FAMILY === 'Windows') {
-            return;
-        }
-
         Execution::current()->filter = stream_filter_append(STDOUT, 'agent_output_null', STREAM_FILTER_WRITE) ?: null;
     }
 

@@ -87,10 +87,6 @@ final class Execution
 
     public function captureStdout(): void
     {
-        if (PHP_OS_FAMILY === 'Windows') {
-            return;
-        }
-
         $this->restoreStdout();
 
         if (! in_array('agent_output_capture', stream_get_filters(), true)) {
