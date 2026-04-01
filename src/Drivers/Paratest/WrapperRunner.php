@@ -10,6 +10,7 @@ use ParaTest\Options;
 use ParaTest\RunnerInterface;
 use ParaTest\WrapperRunner\WrapperRunner as ParatestWrapperRunner;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @internal
@@ -22,6 +23,7 @@ final readonly class WrapperRunner implements RunnerInterface
 
     public function __construct(
         Options $options,
+        private OutputInterface $output,
     ) {
         $this->runner = new ParatestWrapperRunner($options, new NullOutput);
     }
@@ -39,7 +41,7 @@ final readonly class WrapperRunner implements RunnerInterface
         $result = $execution->result();
 
         if ($result !== null) {
-            fwrite($execution->stdout(), json_encode($result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR).PHP_EOL);
+            $this->output->writeln(json_encode($result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
         }
 
         return $exitCode;
