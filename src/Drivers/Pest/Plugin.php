@@ -10,6 +10,7 @@ use Pao\UserFilters\CaptureFilter;
 use Pest\Contracts\Plugins\AddsOutput;
 use Pest\Contracts\Plugins\HandlesArguments;
 use Pest\Contracts\Plugins\Terminable;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @internal
@@ -22,6 +23,11 @@ final class Plugin implements AddsOutput, HandlesArguments, Terminable
 {
     /** @var Result|null */
     private ?array $result = null;
+
+    public function __construct(private readonly OutputInterface $output)
+    {
+        //
+    }
 
     /**
      * @param  array<int, string>  $arguments
@@ -86,7 +92,7 @@ final class Plugin implements AddsOutput, HandlesArguments, Terminable
             }
         }
 
-        fwrite($execution->stdout(), json_encode($this->result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR).PHP_EOL);
+        $this->output->writeln(json_encode($this->result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
 
         $this->result = null;
     }

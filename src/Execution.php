@@ -103,14 +103,6 @@ final class Execution
     }
 
     /**
-     * @return resource
-     */
-    public function stdout(): mixed
-    {
-        return $this->stdout ?? STDOUT;
-    }
-
-    /**
      * @param  array<int, string>  $argv
      * @return array<int, string>
      */
