@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Pao\Drivers\Phpunit\Subscribers;
 
-use JsonException;
 use Pao\Execution;
+use Pao\Support\ToonEncoder;
 use PHPUnit\Event\TestRunner\Finished;
 use PHPUnit\Event\TestRunner\FinishedSubscriber;
 
@@ -16,9 +16,6 @@ use PHPUnit\Event\TestRunner\FinishedSubscriber;
  */
 final readonly class TestRunnerFinishedSubscriber implements FinishedSubscriber
 {
-    /**
-     * @throws JsonException
-     */
     public function notify(Finished $event): void
     {
         $execution = Execution::current();
@@ -33,6 +30,6 @@ final readonly class TestRunnerFinishedSubscriber implements FinishedSubscriber
             return;
         }
 
-        fwrite(STDOUT, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR).PHP_EOL);
+        fwrite(STDOUT, ToonEncoder::encode($data).PHP_EOL);
     }
 }

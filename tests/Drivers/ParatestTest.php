@@ -112,6 +112,6 @@ it('outputs json for multiple failures and errors', function (): void {
 it('outputs normal paratest output when no agent is detected', function (): void {
     $process = runWith('paratest', 'PassingTest', withAgent: false);
 
-    expect($process->getOutput())->not->toContain('"result"')
+    expect($process->getOutput())->not->toContain('result: passed')
         ->and($process->getOutput())->toContain('OK');
 });

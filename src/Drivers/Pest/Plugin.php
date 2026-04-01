@@ -6,6 +6,7 @@ namespace Pao\Drivers\Pest;
 
 use Pao\Drivers\Phpunit\Extension;
 use Pao\Execution;
+use Pao\Support\ToonEncoder;
 use Pao\UserFilters\CaptureFilter;
 use Pest\Contracts\Plugins\AddsOutput;
 use Pest\Contracts\Plugins\HandlesArguments;
@@ -92,7 +93,7 @@ final class Plugin implements AddsOutput, HandlesArguments, Terminable
             }
         }
 
-        $this->output->writeln(json_encode($this->result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+        $this->output->writeln(ToonEncoder::encode($this->result));
 
         $this->result = null;
     }

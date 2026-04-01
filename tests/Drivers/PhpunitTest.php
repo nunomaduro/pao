@@ -90,12 +90,8 @@ it('outputs json for dependent tests', function (): void {
         ->and($output['passed'])->toBe(2);
 });
 
-it('outputs json for tests with unexpected output', function (): void {
-    $process = runWith('phpunit', 'UnexpectedOutputTest');
-    $raw = $process->getOutput();
-
-    $jsonStart = strpos($raw, '{');
-    $output = json_decode(substr($raw, (int) $jsonStart), associative: true, flags: JSON_THROW_ON_ERROR);
+it('outputs toon for tests with unexpected output', function (): void {
+    $output = decodeFromMixedOutput(runWith('phpunit', 'UnexpectedOutputTest'));
 
     expect($output['result'])->toBe('passed')
         ->and($output['tests'])->toBe(1);
@@ -116,6 +112,6 @@ it('outputs json for multiple failures and errors', function (): void {
 it('outputs normal phpunit output when no agent is detected', function (): void {
     $process = runWith('phpunit', 'PassingTest', withAgent: false);
 
-    expect($process->getOutput())->not->toContain('"result"')
+    expect($process->getOutput())->not->toContain('result: passed')
         ->and($process->getOutput())->toContain('OK');
 });

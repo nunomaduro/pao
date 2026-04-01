@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Pao\Support\ToonDecoder;
 use Symfony\Component\Process\Process;
 
 function runWith(string $binary, string $filter, bool $withAgent = true, array $extraArgs = [], string $config = 'tests/Fixtures/phpunit.xml'): Process
@@ -36,29 +37,22 @@ function decodeFromMixedOutput(Process $process): mixed
 {
     $raw = cleanOutput($process->getOutput());
 
-    $jsonStart = strpos($raw, '{"result":');
+    $toonStart = strpos($raw, 'result: ');
 
-    if ($jsonStart !== false && $jsonStart > 0) {
-        $raw = substr($raw, $jsonStart);
+    if ($toonStart !== false && $toonStart > 0) {
+        $raw = substr($raw, $toonStart);
     }
 
-    return json_decode($raw, associative: true, flags: JSON_THROW_ON_ERROR);
+    return ToonDecoder::decode($raw);
 }
 
 function decodeOutput(Process $process): mixed
 {
     $raw = cleanOutput($process->getOutput());
 
-    $decoded = json_decode($raw, associative: true);
+    $toonStart = strpos($raw, 'result: ');
 
-    if ($decoded === null) {
-        $jsonStart = strpos($raw, '{"result":');
-        if ($jsonStart !== false) {
-            $decoded = json_decode(substr($raw, $jsonStart), associative: true);
-        }
-    }
-
-    if ($decoded === null) {
+    if ($toonStart === false) {
         $stderr = $process->getErrorOutput();
         $exitCode = $process->getExitCode();
         $command = $process->getCommandLine();
@@ -67,7 +61,7 @@ function decodeOutput(Process $process): mixed
         $plugins = file_exists($pluginsFile) ? file_get_contents($pluginsFile) : 'FILE NOT FOUND';
 
         throw new RuntimeException(
-            'Failed to decode JSON: '.json_last_error_msg()."\n".
+            'Failed to find TOON output'."\n".
             sprintf('Command: %s%s', $command, PHP_EOL).
             sprintf('Exit code: %s%s', $exitCode, PHP_EOL).
             sprintf('OS: %s%s', PHP_OS_FAMILY, PHP_EOL).
@@ -77,5 +71,9 @@ function decodeOutput(Process $process): mixed
         );
     }
 
-    return $decoded;
+    if ($toonStart > 0) {
+        $raw = substr($raw, $toonStart);
+    }
+
+    return ToonDecoder::decode($raw);
 }

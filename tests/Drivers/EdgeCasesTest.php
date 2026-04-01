@@ -10,11 +10,7 @@ it('does not break tests that read argv', function (): void {
 });
 
 it('does not break tests that fwrite to stdout', function (): void {
-    $process = runWith('phpunit', 'StdoutWriteTest');
-    $raw = $process->getOutput();
-
-    $jsonStart = strpos($raw, '{');
-    $output = json_decode(substr($raw, (int) $jsonStart), associative: true, flags: JSON_THROW_ON_ERROR);
+    $output = decodeFromMixedOutput(runWith('phpunit', 'StdoutWriteTest'));
 
     expect($output['result'])->toBe('passed')
         ->and($output['tests'])->toBe(2);
@@ -48,7 +44,7 @@ it('works correctly when no agent is detected and does not affect output', funct
     $output = $process->getOutput();
 
     expect($output)->toContain('OK')
-        ->and($output)->not->toContain('"result"')
+        ->and($output)->not->toContain('result: passed')
         ->and($output)->not->toContain('agent-output');
 });
 
@@ -95,11 +91,7 @@ it('does not break tests with BackupGlobals', function (): void {
 });
 
 it('does not break with large test output', function (): void {
-    $process = runWith('phpunit', 'LargeOutputTest');
-    $raw = $process->getOutput();
-
-    $jsonStart = strpos($raw, '{');
-    $output = json_decode(substr($raw, (int) $jsonStart), associative: true, flags: JSON_THROW_ON_ERROR);
+    $output = decodeFromMixedOutput(runWith('phpunit', 'LargeOutputTest'));
 
     expect($output['result'])->toBe('passed')
         ->and($output['tests'])->toBe(1);

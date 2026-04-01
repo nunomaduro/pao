@@ -111,6 +111,6 @@ it('outputs json for multiple failures and errors', function (): void {
 it('outputs normal pest output when no agent is detected', function (): void {
     $process = runWith('pest', 'PassingTest', withAgent: false);
 
-    expect($process->getOutput())->not->toContain('"result"')
+    expect($process->getOutput())->not->toContain('result: passed')
         ->and($process->getOutput())->toContain('passed');
 });

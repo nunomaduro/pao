@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Pao\Drivers\Paratest;
 
-use JsonException;
 use Pao\Execution;
+use Pao\Support\ToonEncoder;
 use ParaTest\Options;
 use ParaTest\RunnerInterface;
 use ParaTest\WrapperRunner\WrapperRunner as ParatestWrapperRunner;
@@ -28,9 +28,6 @@ final readonly class WrapperRunner implements RunnerInterface
         $this->runner = new ParatestWrapperRunner($options, new NullOutput);
     }
 
-    /**
-     * @throws JsonException
-     */
     public function run(): int
     {
         $exitCode = $this->runner->run();
@@ -41,7 +38,7 @@ final readonly class WrapperRunner implements RunnerInterface
         $result = $execution->result();
 
         if ($result !== null) {
-            $this->output->writeln(json_encode($result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            $this->output->writeln(ToonEncoder::encode($result));
         }
 
         return $exitCode;
