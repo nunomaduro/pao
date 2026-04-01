@@ -1,6 +1,6 @@
 > 🚧 **Work in progress** — PAO is under active development. Want to try it early? Install from dev:
 > ```bash
-> composer require nunomaduro/pao:dev-main --dev
+> composer require nunomaduro/pao:0.x-dev --dev
 > ```
 > Then just run your tests with any AI agent — the output will be JSON automatically. Feedback and bug reports are welcome at [github.com/nunomaduro/pao/issues](https://github.com/nunomaduro/pao/issues).
 
@@ -59,7 +59,7 @@ But the real win isn't cost — it's **context window space**. Every test run wi
 > **Requires [PHP 8.3+](https://php.net/releases/)** — Works with **PHPUnit 12-13**, **Pest 4-5**, and **Paratest**.
 
 ```bash
-composer require nunomaduro/pao --dev
+composer require nunomaduro/pao:0.x-dev --dev
 ```
 
 That's it. PAO hooks into PHPUnit, Pest, and Paratest automatically through Composer's autoloader.
