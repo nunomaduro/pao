@@ -16,7 +16,7 @@
 
 ------
 
-**PAO** is agent-optimized output for PHP testing tools. It works with any PHP project — **Laravel**, **Symfony**, **vanilla PHP**, or anything else that uses **PHPUnit**, **Pest**, or **Paratest**.
+**PAO** is agent-optimized output for PHP testing tools. It works with any PHP project — **Laravel**, **Symfony**, **Laminas**, **vanilla PHP**, or anything else that uses **PHPUnit**, **Pest**, or **Paratest**.
 
 It detects when your tests are running inside an AI agent — **Claude Code**, **Cursor**, **Devin**, **Gemini CLI**, and others — and replaces the verbose, human-readable output with compact, super minimal, structured JSON. Zero config — just install and it works.
 
