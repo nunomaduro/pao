@@ -19,7 +19,7 @@
         "laravel/pint": "^1.29.0",
         "pestphp/pest": "^4.4.3 || ^5.0.0",
         "pestphp/pest-plugin-type-coverage": "^4.0.3 || ^5.0.0",
-        "phpstan/phpstan": "^2.1.45",
+        "phpstan/phpstan": "^2.1.46",
         "rector/rector": "^2.3.9",
         "symfony/process": "^7.4.5 || ^8.0.8",
         "symfony/var-dumper": "^7.4.6 || ^8.0.8"

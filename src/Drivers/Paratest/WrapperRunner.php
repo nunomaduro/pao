@@ -15,8 +15,6 @@ use Symfony\Component\Console\Output\NullOutput;
  * @internal
  *
  * @codeCoverageIgnore
- *
- * @rector-ignore
  */
 final readonly class WrapperRunner implements RunnerInterface
 {
@@ -41,7 +39,7 @@ final readonly class WrapperRunner implements RunnerInterface
         $result = $execution->result();
 
         if ($result !== null) {
-            fwrite(STDOUT, json_encode($result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR).PHP_EOL);
+            fwrite($execution->stdout(), json_encode($result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR).PHP_EOL);
         }
 
         return $exitCode;

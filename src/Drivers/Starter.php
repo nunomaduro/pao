@@ -24,12 +24,16 @@ abstract class Starter implements Driver
 
     protected function silenceStdout(): void
     {
-        Execution::current()->filter = stream_filter_append(STDOUT, 'agent_output_null', STREAM_FILTER_WRITE) ?: null;
+        $execution = Execution::current();
+
+        $execution->filter = stream_filter_append(STDOUT, 'agent_output_null', STREAM_FILTER_WRITE) ?: null;
     }
 
     protected function saveStdout(): void
     {
-        Execution::current()->stdout = @fopen('php://stdout', 'w') ?: STDOUT;
+        $execution = Execution::current();
+
+        $execution->stdout = fopen('php://stdout', 'w') ?: STDOUT;
     }
 
     /**
