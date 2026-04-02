@@ -240,3 +240,40 @@ it('handles empty string values', function (): void {
 
     expect($toon)->toContain('""');
 });
+
+it('decodes toon with blank lines between entries', function (): void {
+    $toon = "result: passed\n\ntests: 2\n   \npassed: 2\nduration_ms: 10";
+
+    $decoded = ToonDecoder::decode($toon);
+
+    expect($decoded['result'])->toBe('passed')
+        ->and($decoded['tests'])->toBe(2)
+        ->and($decoded['passed'])->toBe(2);
+});
+
+it('decodes tabular rows with blank lines between them', function (): void {
+    $toon = "result: failed\ntests: 1\npassed: 0\nduration_ms: 5\nfailed: 1\nfailures[2]{test,file,line,message}:\n Tests\\A::a,a.php,1,Fail\n\n Tests\\B::b,b.php,2,Oops";
+
+    $decoded = ToonDecoder::decode($toon);
+
+    expect($decoded['failures'])->toHaveCount(2)
+        ->and($decoded['failures'][0]['test'])->toBe('Tests\\A::a')
+        ->and($decoded['failures'][1]['test'])->toBe('Tests\\B::b');
+});
+
+it('decodes csv rows with all escape sequences', function (): void {
+    $toon = "result: failed\ntests: 1\npassed: 0\nduration_ms: 5\nfailed: 1\nfailures[1]{test,file,line,message}:\n Tests\\A::a,a.php,1,\"has\\n\\r\\t\\\"\\\\special\\x\"";
+
+    $decoded = ToonDecoder::decode($toon);
+
+    expect($decoded['failures'][0]['message'])->toBe("has\n\r\t\"\\special\\x");
+});
+
+it('decodes output list with quoted values containing escapes', function (): void {
+    $toon = "result: passed\ntests: 1\npassed: 1\nduration_ms: 5\noutput[2]:\n - \"line with\\rnewline\\tand tab\"\n - plain line";
+
+    $decoded = ToonDecoder::decode($toon);
+
+    expect($decoded['output'][0])->toBe("line with\rnewline\tand tab")
+        ->and($decoded['output'][1])->toBe('plain line');
+});
