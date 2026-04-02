@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Pao\Support;
 
 /**
- * Encodes the test result into TOON (Token-Oriented Object Notation) format.
- *
  * @link https://github.com/toon-format/spec
  *
  * @internal

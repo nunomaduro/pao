@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Pao\Support;
 
 /**
- * Decodes TOON (Token-Oriented Object Notation) output back into an array.
- *
  * @link https://github.com/toon-format/spec
  *
  * @internal
