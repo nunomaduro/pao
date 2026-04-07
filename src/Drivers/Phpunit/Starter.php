@@ -21,9 +21,7 @@ final class Starter extends BaseStarter
         $serverArgv = $_SERVER['argv'];
 
         $argv = $this->ensureJunitLog($serverArgv);
-
-        $argv[] = '--extension';
-        $argv[] = Extension::class;
+        $argv[] = '--no-output';
 
         $_SERVER['argv'] = $argv;
     }

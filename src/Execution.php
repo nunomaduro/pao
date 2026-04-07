@@ -17,7 +17,7 @@ use Random\RandomException;
  * @codeCoverageIgnore
  *
  * @phpstan-type TestDetail array{test: string, file: string, line: int, message: string}
- * @phpstan-type Result array{result: 'passed'|'failed', tests: int, passed: int, duration_ms: int, failed?: int, failures?: list<TestDetail>, errors?: int, error_details?: list<TestDetail>, skipped?: int, output?: list<string>}
+ * @phpstan-type Result array{result: 'passed'|'failed', tests: int, passed: int, duration_ms: int, failed?: int, failures?: list<TestDetail>, errors?: int, error_details?: list<TestDetail>, skipped?: int, raw?: list<string>}
  */
 final class Execution
 {
@@ -85,21 +85,19 @@ final class Execution
         }
     }
 
-    public function captureStdout(): void
+    public function flushStdout(): void
     {
-        $this->restoreStdout();
-
-        if (! in_array('agent_output_capture', stream_get_filters(), true)) {
-            stream_filter_register('agent_output_capture', CaptureFilter::class);
+        if (! is_resource($this->filter)) {
+            return;
         }
 
-        CaptureFilter::reset();
+        $captured = CaptureFilter::output();
 
-        $this->filter = stream_filter_append(
-            STDOUT,
-            'agent_output_capture',
-            STREAM_FILTER_WRITE,
-        ) ?: null;
+        $this->restoreStdout();
+
+        if ($captured !== '') {
+            fwrite(STDOUT, $captured);
+        }
     }
 
     /**
