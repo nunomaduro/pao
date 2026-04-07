@@ -22,7 +22,7 @@ final class JunitParser
             return null;
         }
 
-        $xml = simplexml_load_file($junitFile);
+        $xml = @simplexml_load_file($junitFile);
 
         if (! $xml instanceof SimpleXMLElement) {
             return null;

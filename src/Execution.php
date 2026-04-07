@@ -100,23 +100,6 @@ final class Execution
         }
     }
 
-    public function captureStdout(): void
-    {
-        $this->restoreStdout();
-
-        if (! in_array('agent_output_capture', stream_get_filters(), true)) {
-            stream_filter_register('agent_output_capture', CaptureFilter::class);
-        }
-
-        CaptureFilter::reset();
-
-        $this->filter = stream_filter_append(
-            STDOUT,
-            'agent_output_capture',
-            STREAM_FILTER_WRITE,
-        ) ?: null;
-    }
-
     /**
      * @param  array<int, string>  $argv
      * @return array<int, string>

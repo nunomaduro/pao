@@ -6,25 +6,16 @@ namespace Pao\Drivers\Pest;
 
 use Pao\Drivers\Phpunit\Extension;
 use Pao\Execution;
-use Pao\UserFilters\CaptureFilter;
-use Pest\Contracts\Plugins\AddsOutput;
 use Pest\Contracts\Plugins\HandlesArguments;
-use Pest\Contracts\Plugins\Terminable;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @internal
  *
  * @codeCoverageIgnore
- *
- * @phpstan-import-type Result from Execution
  */
-final class Plugin implements AddsOutput, HandlesArguments, Terminable
+final class Plugin implements HandlesArguments
 {
-    /** @var Result|null */
-    private ?array $result = null;
-
-    public function __construct(private readonly OutputInterface $output)
+    public function __construct()
     {
         //
     }
@@ -43,63 +34,13 @@ final class Plugin implements AddsOutput, HandlesArguments, Terminable
 
         $arguments = $execution->ensureJunitLog($arguments);
 
+        $arguments[] = '--no-output';
+
         if (! in_array('--parallel', $arguments, true)) {
             $arguments[] = '--extension';
             $arguments[] = Extension::class;
         }
 
         return $arguments;
-    }
-
-    public function addOutput(int $exitCode): int
-    {
-        if (! Execution::running()) {
-            return $exitCode;
-        }
-
-        $execution = Execution::current();
-
-        $this->result = $execution->result();
-
-        $execution->captureStdout();
-
-        return $exitCode;
-    }
-
-    public function terminate(): void
-    {
-        if (! Execution::running()) {
-            return;
-        }
-
-        $execution = Execution::current();
-
-        if ($this->result === null) {
-            $execution->flushStdout();
-
-            return;
-        }
-
-        $captured = trim(CaptureFilter::output());
-
-        $execution->restoreStdout();
-
-        if ($captured !== '') {
-            $captured = (string) preg_replace('/\e\[[0-9;]*m/', '', $captured);
-            $captured = (string) preg_replace('/[─━│┌┐└┘├┤┬┴┼▓░▒═║╔╗╚╝╠╣╦╩╬]+/', '', $captured);
-            $captured = (string) preg_replace('/\.{3,}/', ' ', $captured);
-            $captured = (string) preg_replace('/[ \t]+/', ' ', $captured);
-            $captured = (string) preg_replace('/\n\s*\n/', "\n", $captured);
-
-            $lines = array_values(array_filter(array_map(trim(...), explode("\n", $captured))));
-
-            if ($lines !== []) {
-                $this->result['output'] = $lines;
-            }
-        }
-
-        $this->output->writeln(json_encode($this->result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
-
-        $this->result = null;
     }
 }

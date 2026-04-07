@@ -24,6 +24,7 @@ final class Starter extends BaseStarter
 
         $argv[] = '--extension';
         $argv[] = Extension::class;
+        $argv[] = '--no-output';
 
         $_SERVER['argv'] = $argv;
     }

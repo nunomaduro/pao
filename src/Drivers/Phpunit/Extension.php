@@ -18,10 +18,6 @@ final class Extension implements ExtensionInterface
 {
     public function bootstrap(Configuration $configuration, Facade $facade, ParameterCollection $parameters): void
     {
-        if ($configuration->noOutput()) {
-            return;
-        }
-
         $facade->replaceOutput();
         $facade->replaceProgressOutput();
         $facade->replaceResultOutput();

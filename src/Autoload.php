@@ -23,12 +23,45 @@ if (! $agent->isAgent) {
 
 unset($_SERVER['COLLISION_PRINTER']);
 
-register_shutdown_function(function () {
+register_shutdown_function(function (): void {
     if (! Execution::running()) {
         return;
     }
 
-    Execution::current()->flushStdout();
+    $execution = Execution::current();
+
+    if (! is_resource($execution->filter)) {
+        return;
+    }
+
+    $result = $execution->result() ?: [];
+
+    $captured = trim(UserFilters\CaptureFilter::output());
+
+    $execution->restoreStdout();
+
+    if ($captured !== '') {
+        $captured = (string) preg_replace('/\e\[[0-9;]*[A-Za-z]/', '', $captured);
+        $captured = (string) preg_replace('/[─━│┌┐└┘├┤┬┴┼▓░▒═║╔╗╚╝╠╣╦╩╬]+/', '', $captured);
+        $captured = (string) preg_replace('/\.{3,}/', ' ', $captured);
+        $captured = (string) preg_replace('/[ \t]+/', ' ', $captured);
+        $captured = (string) preg_replace('/\n\s*\n/', "\n", $captured);
+
+        $lines = array_values(array_filter(
+            array_map(trim(...), explode("\n", $captured)),
+            fn (string $line): bool => $line !== ''
+                && ! preg_match('/^(Tests:|Duration:|Parallel:|Time:|Generating code coverage)\s/', $line)
+                && ! str_ends_with($line, 'by Sebastian Bergmann and contributors.'),
+        ));
+
+        if ($lines !== []) {
+            $result['output'] = $lines;
+        }
+    }
+
+    if (! empty($result)) {
+        fwrite(STDOUT, json_encode($result, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR).PHP_EOL);
+    }
 });
 
 Execution::start($agent, $argv);
