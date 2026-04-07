@@ -17,9 +17,9 @@
 
 ------
 
-**PAO** is agent-optimized output for PHP testing tools. It works with any PHP project — **Laravel**, **Symfony**, **Laminas**, **vanilla PHP**, or anything else that uses **PHPUnit**, **Pest**, or **Paratest**.
+**PAO** is agent-optimized output for PHP testing and static analysis tools. It works with any PHP project — **Laravel**, **Symfony**, **Laminas**, **vanilla PHP**, or anything else that uses **PHPUnit**, **Pest**, **Paratest**, or **PHPStan**.
 
-It detects when your tests are running inside an AI agent — **Claude Code**, **Cursor**, **Devin**, **Gemini CLI**, and others — and replaces the verbose, human-readable output with compact, super minimal, structured JSON. Zero config — just install and it works.
+It detects when your tools are running inside an AI agent — **Claude Code**, **Cursor**, **Devin**, **Gemini CLI**, and others — and replaces the verbose, human-readable output with compact, super minimal, structured JSON. Zero config — just install and it works.
 
 ## 🔥 Benchmarks
 
@@ -57,13 +57,13 @@ But the real win isn't cost — it's **context window space**. Every test run wi
 
 ## ⚡️ Installation
 
-> **Requires [PHP 8.3+](https://php.net/releases/)** — Works with **PHPUnit 12-13**, **Pest 4-5**, and **Paratest**.
+> **Requires [PHP 8.3+](https://php.net/releases/)** — Works with **PHPUnit 12-13**, **Pest 4-5**, **Paratest**, and **PHPStan**.
 
 ```bash
 composer require nunomaduro/pao:^0.1 --dev
 ```
 
-That's it. PAO hooks into PHPUnit, Pest, and Paratest automatically through Composer's autoloader.
+That's it. PAO hooks into PHPUnit, Pest, Paratest, and PHPStan automatically through Composer's autoloader.
 
 ## ✨ Before & After
 
@@ -110,6 +110,33 @@ Extra output from Pest plugins like `--coverage` or `--profile` is captured, cle
   ]
 }
 ```
+
+### PHPStan
+
+PHPStan output is also converted to structured JSON:
+
+```json
+{
+  "result": "failed",
+  "errors": 2,
+  "error_details": [
+    {
+      "file": "/app/Http/Controllers/Controller.php",
+      "line": 9,
+      "message": "Method Controller::index() should return int but returns string.",
+      "identifier": "return.type"
+    },
+    {
+      "file": "/app/Http/Controllers/Controller.php",
+      "line": 14,
+      "message": "Call to an undefined method Controller::doesNotExist().",
+      "identifier": "method.notFound"
+    }
+  ]
+}
+```
+
+When all checks pass: `{"result":"passed","errors":0}`
 
 ---
 
