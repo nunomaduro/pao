@@ -21,6 +21,10 @@ if (! $agent->isAgent) {
     return;
 }
 
+if (array_intersect($argv, ['--version', '--help', '-h'])) {
+    return;
+}
+
 unset($_SERVER['COLLISION_PRINTER']);
 
 register_shutdown_function(function (): void {
@@ -38,7 +42,9 @@ register_shutdown_function(function (): void {
 
     if ($captured !== '') {
         $captured = (string) preg_replace('/\e\[[0-9;]*[A-Za-z]/', '', $captured);
-        $captured = (string) preg_replace('/[─━│┌┐└┘├┤┬┴┼▓░▒═║╔╗╚╝╠╣╦╩╬]+/', '', $captured);
+        $captured = (string) preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/', '', $captured);
+        $captured = (string) preg_replace('/\x{FFFD}/u', '', $captured);
+        $captured = (string) preg_replace('/[─━│┌┐└┘├┤┬┴┼▓░▒═║╔╗╚╝╠╣╦╩╬➜▶►⚠✖✔●◆■▪→←↑↓▕⨯✕]+/u', '', $captured);
         $captured = (string) preg_replace('/\.{3,}/', ' ', $captured);
         $captured = (string) preg_replace('/[ \t]+/', ' ', $captured);
         $captured = (string) preg_replace('/\n\s*\n/', "\n", $captured);
@@ -51,7 +57,7 @@ register_shutdown_function(function (): void {
         ));
 
         if ($lines !== []) {
-            $result['output'] = $lines;
+            $result['raw'] = $lines;
         }
     }
 
