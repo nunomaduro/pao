@@ -2,18 +2,41 @@
 
 declare(strict_types=1);
 
-use Pao\Support\PhpstanParser;
+use Pao\Drivers\Phpstan\Starter;
+use Pao\UserFilters\CaptureFilter;
+
+function phpstanParse(string $input): ?array
+{
+    CaptureFilter::reset();
+
+    if (! in_array('agent_output_capture', stream_get_filters(), true)) {
+        stream_filter_register('agent_output_capture', CaptureFilter::class);
+    }
+
+    $filter = stream_filter_append(STDOUT, 'agent_output_capture', STREAM_FILTER_WRITE);
+    fwrite(STDOUT, $input);
+
+    if (is_resource($filter)) {
+        stream_filter_remove($filter);
+    }
+
+    $result = (new Starter)->parse();
+
+    CaptureFilter::reset();
+
+    return $result;
+}
 
 it('returns null for empty string', function (): void {
-    expect(PhpstanParser::parse(''))->toBeNull();
+    expect(phpstanParse(''))->toBeNull();
 });
 
 it('returns null for invalid json', function (): void {
-    expect(PhpstanParser::parse('not json'))->toBeNull();
+    expect(phpstanParse('not json'))->toBeNull();
 });
 
 it('returns null for json without totals', function (): void {
-    expect(PhpstanParser::parse('{"foo":"bar"}'))->toBeNull();
+    expect(phpstanParse('{"foo":"bar"}'))->toBeNull();
 });
 
 it('returns passed for zero errors', function (): void {
@@ -23,7 +46,7 @@ it('returns passed for zero errors', function (): void {
         'errors' => [],
     ]);
 
-    $result = PhpstanParser::parse($json);
+    $result = phpstanParse($json);
 
     expect($result)->not->toBeNull()
         ->and($result['result'])->toBe('passed')
@@ -47,7 +70,7 @@ it('returns failed with error details', function (): void {
         'errors' => [],
     ]);
 
-    $result = PhpstanParser::parse($json);
+    $result = phpstanParse($json);
 
     expect($result)->not->toBeNull()
         ->and($result['result'])->toBe('failed')
@@ -74,7 +97,7 @@ it('defaults identifier to unknown when missing', function (): void {
         'errors' => [],
     ]);
 
-    $result = PhpstanParser::parse($json);
+    $result = phpstanParse($json);
 
     expect($result)->not->toBeNull()
         ->and($result['error_details'][0]['identifier'])->toBe('unknown');
@@ -87,7 +110,7 @@ it('captures general errors', function (): void {
         'errors' => ['Autoload file not found'],
     ]);
 
-    $result = PhpstanParser::parse($json);
+    $result = phpstanParse($json);
 
     expect($result)->not->toBeNull()
         ->and($result['result'])->toBe('failed')
@@ -110,7 +133,7 @@ it('combines file errors and general errors', function (): void {
         'errors' => ['General error'],
     ]);
 
-    $result = PhpstanParser::parse($json);
+    $result = phpstanParse($json);
 
     expect($result)->not->toBeNull()
         ->and($result['result'])->toBe('failed')
@@ -139,7 +162,7 @@ it('discards tip and ignorable fields', function (): void {
         'errors' => [],
     ]);
 
-    $result = PhpstanParser::parse($json);
+    $result = phpstanParse($json);
 
     expect($result)->not->toBeNull()
         ->and($result['error_details'][0])->toBe([
@@ -159,7 +182,7 @@ it('strips leading non-json content like phpstan note lines', function (): void 
 
     $input = "Note: Using configuration file /home/user/project/phpstan.neon.\n".$json;
 
-    $result = PhpstanParser::parse($input);
+    $result = phpstanParse($input);
 
     expect($result)->not->toBeNull()
         ->and($result['result'])->toBe('passed')
@@ -187,7 +210,7 @@ it('handles multiple files with multiple errors', function (): void {
         'errors' => [],
     ]);
 
-    $result = PhpstanParser::parse($json);
+    $result = phpstanParse($json);
 
     expect($result)->not->toBeNull()
         ->and($result['errors'])->toBe(3)

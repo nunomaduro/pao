@@ -15,7 +15,7 @@
         "shipfastlabs/agent-detector": "^1.1.0"
     },
     "require-dev": {
-        "brianium/paratest": "^7.20.0",
+        "brianium/paratest": "^7.22.1",
         "laravel/pint": "^1.29.0",
         "pestphp/pest": "^4.4.3 || ^5.0.0",
         "pestphp/pest-plugin-type-coverage": "^4.0.3 || ^5.0.0",

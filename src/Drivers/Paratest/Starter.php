@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pao\Drivers\Paratest;
 
+use Pao\Drivers\Concerns\JunitParsable;
 use Pao\Drivers\Starter as BaseStarter;
 
 /**
@@ -13,6 +14,8 @@ use Pao\Drivers\Starter as BaseStarter;
  */
 final class Starter extends BaseStarter
 {
+    use JunitParsable;
+
     public function start(): void
     {
         $this->registerNullFilter();

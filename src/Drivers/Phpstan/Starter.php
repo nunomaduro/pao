@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Pao\Drivers\Phpstan;
 
 use Pao\Drivers\Starter as BaseStarter;
-use Pao\Execution;
-use Pao\Support\PhpstanParser;
 use Pao\UserFilters\CaptureFilter;
 
 /**
@@ -31,31 +29,73 @@ final class Starter extends BaseStarter
         $argv = $this->ensureNoProgress($argv);
         $_SERVER['argv'] = $argv;
 
-        $execution = Execution::current();
-        $execution->captureStdout();
+        $this->silenceStdout();
+    }
 
-        register_shutdown_function(static function (): void {
-            if (! Execution::running()) {
-                return;
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function parse(): ?array
+    {
+        $captured = trim(CaptureFilter::output());
+
+        if ($captured === '') {
+            return null;
+        }
+
+        $start = strpos($captured, '{');
+
+        if ($start !== false && $start > 0) {
+            $captured = substr($captured, $start);
+        }
+
+        /** @var array<string, mixed>|null $data */
+        $data = json_decode($captured, associative: true);
+
+        if (! is_array($data) || ! isset($data['totals'])) {
+            return null;
+        }
+
+        /** @var list<array{file: string, line: int, message: string, identifier: string}> $errorDetails */
+        $errorDetails = [];
+
+        /** @var array<string, array{errors: int, messages: list<array{message: string, line: int, identifier?: string}>}> $files */
+        $files = is_array($data['files'] ?? null) ? $data['files'] : [];
+
+        foreach ($files as $file => $fileData) {
+            foreach ($fileData['messages'] as $message) {
+                $errorDetails[] = [
+                    'file' => $file,
+                    'line' => $message['line'],
+                    'message' => $message['message'],
+                    'identifier' => $message['identifier'] ?? 'unknown',
+                ];
             }
+        }
 
-            $execution = Execution::current();
-            $execution->restoreStdout();
+        /** @var list<string> $errors */
+        $errors = is_array($data['errors'] ?? null) ? $data['errors'] : [];
 
-            $captured = trim(CaptureFilter::output());
+        /** @var list<string> $generalErrors */
+        $generalErrors = array_values(array_filter($errors, static fn (string $error): bool => $error !== ''));
 
-            if ($captured === '') {
-                return;
-            }
+        $totalErrors = count($errorDetails) + count($generalErrors);
 
-            $result = PhpstanParser::parse($captured);
+        /** @var array<string, mixed> $result */
+        $result = [
+            'result' => $totalErrors > 0 ? 'failed' : 'passed',
+            'errors' => $totalErrors,
+        ];
 
-            if ($result === null) {
-                return;
-            }
+        if ($errorDetails !== []) {
+            $result['error_details'] = $errorDetails;
+        }
 
-            fwrite(STDOUT, json_encode($result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR).PHP_EOL);
-        });
+        if ($generalErrors !== []) {
+            $result['general_errors'] = $generalErrors;
+        }
+
+        return $result;
     }
 
     private function isAnalyseCommand(): bool

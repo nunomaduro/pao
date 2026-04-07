@@ -47,13 +47,4 @@ abstract class Starter implements Driver
 
         $execution->stdout = fopen('php://stdout', 'w') ?: STDOUT;
     }
-
-    /**
-     * @param  array<int, string>  $argv
-     * @return array<int, string>
-     */
-    protected function ensureJunitLog(array $argv): array
-    {
-        return Execution::current()->ensureJunitLog($argv);
-    }
 }

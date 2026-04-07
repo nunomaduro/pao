@@ -7,9 +7,7 @@ namespace Pao;
 use AgentDetector\AgentResult;
 use Pao\Contracts\Driver;
 use Pao\Exceptions\ShouldNotHappenException;
-use Pao\Support\JunitParser;
 use Pao\UserFilters\CaptureFilter;
-use Random\RandomException;
 
 /**
  * @internal
@@ -29,7 +27,7 @@ final class Execution
      */
     private function __construct(
         public readonly AgentResult $agent,
-        public string $junitFile,
+        public readonly Driver $driver,
         public mixed $stdout = null,
         public mixed $filter = null,
     ) {
@@ -38,8 +36,6 @@ final class Execution
 
     /**
      * @param  array<int, string>  $argv
-     *
-     * @throws RandomException
      */
     public static function start(AgentResult $agent, array $argv): void
     {
@@ -60,7 +56,7 @@ final class Execution
         if ($starter instanceof Driver) {
             self::$instance = new self(
                 $agent,
-                sys_get_temp_dir().'/agent-output-'.bin2hex(random_bytes(8)).'.xml',
+                $starter,
             );
 
             $starter->start();
@@ -99,35 +95,5 @@ final class Execution
         if ($captured !== '') {
             fwrite(STDOUT, $captured);
         }
-    }
-
-    /**
-     * @param  array<int, string>  $argv
-     * @return array<int, string>
-     */
-    public function ensureJunitLog(array $argv): array
-    {
-        if (! in_array('--log-junit', $argv, true)) {
-            $argv[] = '--log-junit';
-            $argv[] = $this->junitFile;
-
-            return $argv;
-        }
-
-        $index = array_search('--log-junit', $argv, true);
-
-        if ($index !== false && isset($argv[$index + 1])) {
-            $this->junitFile = $argv[$index + 1];
-        }
-
-        return $argv;
-    }
-
-    /**
-     * @return Result|null
-     */
-    public function result(): ?array
-    {
-        return JunitParser::parse($this->junitFile);
     }
 }

@@ -34,7 +34,7 @@ register_shutdown_function(function (): void {
 
     $execution = Execution::current();
 
-    $result = $execution->result() ?: [];
+    $result = $execution->driver->parse() ?: [];
 
     $captured = trim(UserFilters\CaptureFilter::output());
 

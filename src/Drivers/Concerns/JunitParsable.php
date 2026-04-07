@@ -2,24 +2,33 @@
 
 declare(strict_types=1);
 
-namespace Pao\Support;
+namespace Pao\Drivers\Concerns;
 
 use SimpleXMLElement;
 
 /**
  * @internal
  *
- * @phpstan-import-type Result from \Pao\Execution
- *
  * @codeCoverageIgnore
  */
-final class JunitParser
+trait JunitParsable
 {
     /**
-     * @return Result|null
+     * @return array<string, mixed>|null
      */
-    public static function parse(string $junitFile): ?array
+    public ?string $junitFile = null;
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function parse(): ?array
     {
+        $junitFile = $this->junitFile;
+
+        if ($junitFile === null) {
+            return null;
+        }
+
         if (! file_exists($junitFile)) {
             return null;
         }
@@ -56,7 +65,7 @@ final class JunitParser
 
             if (property_exists($testcase, 'failure') && $testcase->failure !== null) {
                 $message = trim((string) $testcase->failure);
-                [$file, $line] = self::resolveLocation((string) $testcase['file'], (int) $testcase['line'], $message);
+                [$file, $line] = $this->resolveLocation((string) $testcase['file'], (int) $testcase['line'], $message);
 
                 $failureDetails[] = [
                     'test' => $testcase['class'].'::'.$testcase['name'],
@@ -68,7 +77,7 @@ final class JunitParser
 
             if (property_exists($testcase, 'error') && $testcase->error !== null) {
                 $message = trim((string) $testcase->error);
-                [$file, $line] = self::resolveLocation((string) $testcase['file'], (int) $testcase['line'], $message);
+                [$file, $line] = $this->resolveLocation((string) $testcase['file'], (int) $testcase['line'], $message);
 
                 $errorDetails[] = [
                     'test' => $testcase['class'].'::'.$testcase['name'],
@@ -79,7 +88,7 @@ final class JunitParser
             }
         }
 
-        /** @var Result $result */
+        /** @var array<string, mixed> $result */
         $result = [
             'result' => ($failures > 0 || $errors > 0) ? 'failed' : 'passed',
             'tests' => $tests,
@@ -105,9 +114,35 @@ final class JunitParser
     }
 
     /**
+     * @param  array<int, string>  $argv
+     * @return array<int, string>
+     */
+    public function ensureJunitLog(array $argv): array
+    {
+        if ($this->junitFile === null) {
+            $this->junitFile = sys_get_temp_dir().'/agent-output-'.bin2hex(random_bytes(8)).'.xml';
+        }
+
+        if (! in_array('--log-junit', $argv, true)) {
+            $argv[] = '--log-junit';
+            $argv[] = $this->junitFile;
+
+            return $argv;
+        }
+
+        $index = array_search('--log-junit', $argv, true);
+
+        if ($index !== false && isset($argv[$index + 1])) {
+            $this->junitFile = $argv[$index + 1];
+        }
+
+        return $argv;
+    }
+
+    /**
      * @return array{string, int}
      */
-    private static function resolveLocation(string $file, int $line, string $message): array
+    private function resolveLocation(string $file, int $line, string $message): array
     {
         if ($line > 0) {
             return [$file, $line];
