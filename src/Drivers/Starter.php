@@ -6,6 +6,7 @@ namespace Pao\Drivers;
 
 use Pao\Contracts\Driver;
 use Pao\Execution;
+use Pao\UserFilters\CaptureFilter;
 use Pao\UserFilters\NullFilter;
 
 /**
@@ -24,9 +25,15 @@ abstract class Starter implements Driver
 
     protected function silenceStdout(): void
     {
+        if (! in_array('agent_output_capture', stream_get_filters(), true)) {
+            stream_filter_register('agent_output_capture', CaptureFilter::class);
+        }
+
+        CaptureFilter::reset();
+
         $execution = Execution::current();
 
-        $execution->filter = stream_filter_append(STDOUT, 'agent_output_null', STREAM_FILTER_WRITE) ?: null;
+        $execution->filter = stream_filter_append(STDOUT, 'agent_output_capture', STREAM_FILTER_WRITE) ?: null;
     }
 
     protected function saveStdout(): void

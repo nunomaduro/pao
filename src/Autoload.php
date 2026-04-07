@@ -23,4 +23,12 @@ if (! $agent->isAgent) {
 
 unset($_SERVER['COLLISION_PRINTER']);
 
+register_shutdown_function(function () {
+    if (! Execution::running()) {
+        return;
+    }
+
+    Execution::current()->flushStdout();
+});
+
 Execution::start($agent, $argv);

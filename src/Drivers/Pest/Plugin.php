@@ -68,11 +68,17 @@ final class Plugin implements AddsOutput, HandlesArguments, Terminable
 
     public function terminate(): void
     {
-        if ($this->result === null || ! Execution::running()) {
+        if (! Execution::running()) {
             return;
         }
 
         $execution = Execution::current();
+
+        if ($this->result === null) {
+            $execution->flushStdout();
+
+            return;
+        }
 
         $captured = trim(CaptureFilter::output());
 

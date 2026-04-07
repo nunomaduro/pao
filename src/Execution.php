@@ -85,6 +85,21 @@ final class Execution
         }
     }
 
+    public function flushStdout(): void
+    {
+        if (! is_resource($this->filter)) {
+            return;
+        }
+
+        $captured = CaptureFilter::output();
+
+        $this->restoreStdout();
+
+        if ($captured !== '') {
+            fwrite(STDOUT, $captured);
+        }
+    }
+
     public function captureStdout(): void
     {
         $this->restoreStdout();

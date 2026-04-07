@@ -36,12 +36,15 @@ final readonly class WrapperRunner implements RunnerInterface
         $exitCode = $this->runner->run();
 
         $execution = Execution::current();
-        $execution->restoreStdout();
 
         $result = $execution->result();
 
         if ($result !== null) {
+            $execution->restoreStdout();
+
             $this->output->writeln(json_encode($result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+        } else {
+            $execution->flushStdout();
         }
 
         return $exitCode;
