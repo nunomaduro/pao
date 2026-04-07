@@ -21,7 +21,7 @@ if (! $agent->isAgent) {
     return;
 }
 
-if (array_intersect($argv, ['--version', '--help', '-h'])) {
+if (array_intersect($argv, ['--version', '--help', '-h', 'worker'])) {
     return;
 }
 

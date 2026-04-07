@@ -16,10 +16,6 @@ final class Starter extends BaseStarter
 {
     public function start(): void
     {
-        if (! $this->isAnalyseCommand()) {
-            return;
-        }
-
         $this->registerNullFilter();
         $this->silenceStderr();
 
@@ -38,6 +34,8 @@ final class Starter extends BaseStarter
     public function parse(): ?array
     {
         $captured = trim(CaptureFilter::output());
+
+        CaptureFilter::reset();
 
         if ($captured === '') {
             return null;
@@ -96,14 +94,6 @@ final class Starter extends BaseStarter
         }
 
         return $result;
-    }
-
-    private function isAnalyseCommand(): bool
-    {
-        /** @var array<int, string> $argv */
-        $argv = $_SERVER['argv'] ?? [];
-
-        return in_array('analyse', $argv, true) || in_array('analyze', $argv, true);
     }
 
     /**
