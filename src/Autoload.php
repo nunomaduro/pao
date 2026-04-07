@@ -15,6 +15,10 @@ if (! is_array($argv) || $argv === []) {
     return;
 }
 
+if (isset($_SERVER['PAO_DISABLE'])) {
+    return;
+}
+
 $agent = AgentDetector::detect();
 
 if (! $agent->isAgent) {

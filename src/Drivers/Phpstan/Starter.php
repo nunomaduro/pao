@@ -54,20 +54,30 @@ final class Starter extends BaseStarter
             return null;
         }
 
-        /** @var list<array{file: string, line: int, message: string, identifier: string}> $errorDetails */
+        /** @var list<array{file: string, line: int, message: string, identifier: string, ignorable?: bool, tip?: string}> $errorDetails */
         $errorDetails = [];
 
-        /** @var array<string, array{errors: int, messages: list<array{message: string, line: int, identifier?: string}>}> $files */
+        /** @var array<string, array{errors: int, messages: list<array{message: string, line: int, identifier?: string, ignorable?: bool, tip?: string}>}> $files */
         $files = is_array($data['files'] ?? null) ? $data['files'] : [];
 
         foreach ($files as $file => $fileData) {
             foreach ($fileData['messages'] as $message) {
-                $errorDetails[] = [
+                $detail = [
                     'file' => $file,
                     'line' => $message['line'],
                     'message' => $message['message'],
                     'identifier' => $message['identifier'] ?? 'unknown',
                 ];
+
+                if (isset($message['ignorable']) && $message['ignorable'] === false) {
+                    $detail['ignorable'] = false;
+                }
+
+                if (isset($message['tip']) && $message['tip'] !== '') {
+                    $detail['tip'] = $message['tip'];
+                }
+
+                $errorDetails[] = $detail;
             }
         }
 

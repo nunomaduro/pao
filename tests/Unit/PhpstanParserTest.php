@@ -142,7 +142,7 @@ it('combines file errors and general errors', function (): void {
         ->and($result['general_errors'])->toHaveCount(1);
 });
 
-it('discards tip and ignorable fields', function (): void {
+it('includes tip and non-ignorable fields', function (): void {
     $json = (string) json_encode([
         'totals' => ['errors' => 0, 'file_errors' => 1],
         'files' => [
@@ -152,7 +152,7 @@ it('discards tip and ignorable fields', function (): void {
                     [
                         'message' => 'Access to undefined property',
                         'line' => 35,
-                        'ignorable' => true,
+                        'ignorable' => false,
                         'identifier' => 'property.notFound',
                         'tip' => 'Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property',
                     ],
@@ -170,6 +170,8 @@ it('discards tip and ignorable fields', function (): void {
             'line' => 35,
             'message' => 'Access to undefined property',
             'identifier' => 'property.notFound',
+            'ignorable' => false,
+            'tip' => 'Learn more: https://phpstan.org/blog/solving-phpstan-access-to-undefined-property',
         ]);
 });
 
