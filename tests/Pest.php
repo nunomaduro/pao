@@ -45,6 +45,27 @@ function decodeFromMixedOutput(Process $process): mixed
     return json_decode($raw, associative: true, flags: JSON_THROW_ON_ERROR);
 }
 
+function runPhpstan(string $configPath, bool $withAgent = true, array $extraArgs = []): Process
+{
+    $env = [
+        'AI_AGENT' => $withAgent ? '1' : false,
+        'CLAUDECODE' => false,
+        'CLAUDE_CODE' => false,
+    ];
+
+    $command = [PHP_BINARY, 'vendor/bin/phpstan', 'analyse', '--configuration', $configPath, ...$extraArgs];
+
+    $process = new Process(
+        command: $command,
+        cwd: dirname(__DIR__),
+        env: $env,
+    );
+
+    $process->run();
+
+    return $process;
+}
+
 function decodeOutput(Process $process): mixed
 {
     $raw = cleanOutput($process->getOutput());
