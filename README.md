@@ -4,11 +4,6 @@
     </a>
 </p>
 
-> 🚧 **Work in progress** — PAO is under active development. Want to try it early? Install from dev:
-> ```bash
-> composer require nunomaduro/pao:0.x-dev --dev
-> ```
-> Then just run your tests with any AI agent — the output will be JSON automatically. Feedback and bug reports are welcome at [github.com/nunomaduro/pao/issues](https://github.com/nunomaduro/pao/issues).
 
 <p align="center">
     <img src="https://raw.githubusercontent.com/nunomaduro/pao/main/art/logo.png" alt="PAO" width="300">
@@ -65,7 +60,7 @@ But the real win isn't cost — it's **context window space**. Every test run wi
 > **Requires [PHP 8.3+](https://php.net/releases/)** — Works with **PHPUnit 12-13**, **Pest 4-5**, and **Paratest**.
 
 ```bash
-composer require nunomaduro/pao:0.x-dev --dev
+composer require nunomaduro/pao:^0.1 --dev
 ```
 
 That's it. PAO hooks into PHPUnit, Pest, and Paratest automatically through Composer's autoloader.
@@ -100,7 +95,7 @@ To this:
 
 🤯 That's up to **99.8% fewer AI tokens**. The output is **constant-size** regardless of how many tests you have — and when tests fail, it includes file paths, line numbers, and failure messages.
 
-Extra output from Pest plugins like `--coverage` or `--profile` is captured, cleaned of ANSI codes and decorations, and included as an `output` array in the JSON:
+Extra output from Pest plugins like `--coverage` or `--profile` is captured, cleaned of ANSI codes and decorations, and included as a `raw` array in the JSON:
 
 ```json
 {
@@ -108,7 +103,7 @@ Extra output from Pest plugins like `--coverage` or `--profile` is captured, cle
   "tests": 1002,
   "passed": 1002,
   "duration_ms": 1520,
-  "output": [
+  "raw": [
     "Http/Controllers/Controller 100.0%",
     "Models/User 0.0%",
     "Total: 33.3 %"
