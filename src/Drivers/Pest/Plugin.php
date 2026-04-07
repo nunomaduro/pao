@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pao\Drivers\Pest;
 
-use Pao\Drivers\Phpunit\Extension;
 use Pao\Execution;
 use Pest\Contracts\Plugins\HandlesArguments;
 
@@ -30,16 +29,8 @@ final class Plugin implements HandlesArguments
             return $arguments;
         }
 
-        $execution = Execution::current();
-
-        $arguments = $execution->ensureJunitLog($arguments);
-
+        $arguments = Execution::current()->ensureJunitLog($arguments);
         $arguments[] = '--no-output';
-
-        if (! in_array('--parallel', $arguments, true)) {
-            $arguments[] = '--extension';
-            $arguments[] = Extension::class;
-        }
 
         return $arguments;
     }

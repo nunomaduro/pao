@@ -30,10 +30,6 @@ register_shutdown_function(function (): void {
 
     $execution = Execution::current();
 
-    if (! is_resource($execution->filter)) {
-        return;
-    }
-
     $result = $execution->result() ?: [];
 
     $captured = trim(UserFilters\CaptureFilter::output());
@@ -59,7 +55,7 @@ register_shutdown_function(function (): void {
         }
     }
 
-    if (! empty($result)) {
+    if ($result !== []) {
         fwrite(STDOUT, json_encode($result, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR).PHP_EOL);
     }
 });
