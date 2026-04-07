@@ -15,13 +15,13 @@
         "shipfastlabs/agent-detector": "^1.1.0"
     },
     "require-dev": {
-        "brianium/paratest": "^7.20",
+        "brianium/paratest": "^7.22",
         "laravel/pint": "^1.29.0",
         "pestphp/pest": "^4.4.3 || ^5.0.0",
         "pestphp/pest-plugin-type-coverage": "^4.0.3 || ^5.0.0",
         "phpstan/phpstan": "^2.1.46",
-        "rector/rector": "^2.3.9",
-        "symfony/process": "^7.4.5 || ^8.0.8",
+        "rector/rector": "^2.4.0",
+        "symfony/process": "^7.4.5 || ^8.1.0",
         "symfony/var-dumper": "^7.4.6 || ^8.0.8"
     },
     "conflict": {
