@@ -10,6 +10,8 @@ use SimpleXMLElement;
  * @internal
  *
  * @phpstan-import-type Result from \Pao\Execution
+ *
+ * @codeCoverageIgnore
  */
 final class JunitParser
 {
