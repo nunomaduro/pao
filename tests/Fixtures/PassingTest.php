@@ -17,4 +17,10 @@ final class PassingTest extends TestCase
     {
         $this->assertSame('foo', 'foo');
     }
+
+    public function test_it_is_slow(): void
+    {
+        usleep(200000);
+        $this->assertSame('foo', 'foo');
+    }
 }

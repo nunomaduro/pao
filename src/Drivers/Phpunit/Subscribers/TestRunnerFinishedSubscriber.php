@@ -27,7 +27,11 @@ final readonly class TestRunnerFinishedSubscriber implements FinishedSubscriber
             return;
         }
 
-        $data = $execution->result();
+        $telemetryInfo = $event->telemetryInfo();
+        $memoryUsage = $telemetryInfo->memoryUsage();
+        $memory = (float) ($memoryUsage->bytes() / 1024 / 1024);
+
+        $data = $execution->result($memory);
 
         if ($data === null) {
             return;

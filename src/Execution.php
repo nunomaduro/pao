@@ -17,7 +17,8 @@ use Random\RandomException;
  * @codeCoverageIgnore
  *
  * @phpstan-type TestDetail array{test: string, file: string, line: int, message: string}
- * @phpstan-type Result array{result: 'passed'|'failed', tests: int, passed: int, duration_ms: int, failed?: int, failures?: list<TestDetail>, errors?: int, error_details?: list<TestDetail>, skipped?: int, output?: list<string>}
+ * @phpstan-type SlowTest array{name: string, duration_ms: int}
+ * @phpstan-type Result array{result: 'passed'|'failed', tests: int, passed: int, duration_ms: int, memory_mb: float, slow_tests?: list<SlowTest>, failed?: int, failures?: list<TestDetail>, errors?: int, error_details?: list<TestDetail>, skipped?: int, output?: list<string>}
  */
 final class Execution
 {
@@ -30,6 +31,7 @@ final class Execution
     private function __construct(
         public readonly AgentResult $agent,
         public string $junitFile,
+        public int $slowTestsThreshold = 500,
         public mixed $stdout = null,
         public mixed $filter = null,
     ) {
@@ -47,6 +49,21 @@ final class Execution
             throw new ShouldNotHappenException;
         }
 
+        $slowTestsThreshold = 500;
+        $newArgv = [];
+
+        foreach ($argv as $arg) {
+            if (str_starts_with($arg, '--slow-tests-threshold=')) {
+                $slowTestsThreshold = (int) substr($arg, 23);
+
+                continue;
+            }
+
+            $newArgv[] = $arg;
+        }
+
+        $_SERVER['argv'] = $argv = $newArgv;
+
         $binary = basename($argv[0] ?? '');
 
         $starter = match ($binary) {
@@ -60,6 +77,7 @@ final class Execution
             self::$instance = new self(
                 $agent,
                 sys_get_temp_dir().'/agent-output-'.bin2hex(random_bytes(8)).'.xml',
+                $slowTestsThreshold,
             );
 
             $starter->start();
@@ -127,8 +145,8 @@ final class Execution
     /**
      * @return Result|null
      */
-    public function result(): ?array
+    public function result(float $memoryMb = 0): ?array
     {
-        return JunitParser::parse($this->junitFile);
+        return JunitParser::parse($this->junitFile, $memoryMb, $this->slowTestsThreshold);
     }
 }

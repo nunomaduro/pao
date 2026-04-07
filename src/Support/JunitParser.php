@@ -10,19 +10,21 @@ use SimpleXMLElement;
  * @internal
  *
  * @phpstan-import-type Result from \Pao\Execution
+ * @phpstan-import-type SlowTest from \Pao\Execution
+ * @phpstan-import-type TestDetail from \Pao\Execution
  */
 final class JunitParser
 {
     /**
      * @return Result|null
      */
-    public static function parse(string $junitFile): ?array
+    public static function parse(string $junitFile, float $memoryMb = 0, int $slowTestsThreshold = 500): ?array
     {
         if (! file_exists($junitFile)) {
             return null;
         }
 
-        $xml = simplexml_load_file($junitFile);
+        $xml = simplexml_load_string((string) file_get_contents($junitFile));
 
         if (! $xml instanceof SimpleXMLElement) {
             return null;
@@ -34,11 +36,14 @@ final class JunitParser
         $skipped = 0;
         $duration = 0.0;
 
-        /** @var list<array{test: string, file: string, line: int, message: string}> $failureDetails */
+        /** @var list<TestDetail> $failureDetails */
         $failureDetails = [];
 
-        /** @var list<array{test: string, file: string, line: int, message: string}> $errorDetails */
+        /** @var list<TestDetail> $errorDetails */
         $errorDetails = [];
+
+        /** @var list<SlowTest> $slowTests */
+        $slowTests = [];
 
         foreach ($xml->testsuite as $suite) {
             $tests += (int) $suite['tests'];
@@ -48,6 +53,15 @@ final class JunitParser
         }
 
         foreach ($xml->xpath('//testcase') ?? [] as $testcase) {
+            $testDurationMs = (int) round((float) $testcase['time'] * 1000);
+
+            if ($testDurationMs > $slowTestsThreshold) {
+                $slowTests[] = [
+                    'name' => $testcase['class'].'::'.$testcase['name'],
+                    'duration_ms' => $testDurationMs,
+                ];
+            }
+
             if (property_exists($testcase, 'skipped') && $testcase->skipped !== null) {
                 $skipped++;
             }
@@ -83,7 +97,12 @@ final class JunitParser
             'tests' => $tests,
             'passed' => $tests - $failures - $errors - $skipped,
             'duration_ms' => (int) round($duration * 1000),
+            'memory_mb' => $memoryMb,
         ];
+
+        if ($slowTests !== []) {
+            $result['slow_tests'] = $slowTests;
+        }
 
         if ($failures > 0) {
             $result['failed'] = $failures;

@@ -59,7 +59,9 @@ final class Plugin implements AddsOutput, HandlesArguments, Terminable
 
         $execution = Execution::current();
 
-        $this->result = $execution->result();
+        $memoryMb = (float) (memory_get_peak_usage(true) / 1024 / 1024);
+
+        $this->result = $execution->result($memoryMb);
 
         $execution->captureStdout();
 

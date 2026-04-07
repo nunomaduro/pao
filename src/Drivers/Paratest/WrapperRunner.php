@@ -38,7 +38,9 @@ final readonly class WrapperRunner implements RunnerInterface
         $execution = Execution::current();
         $execution->restoreStdout();
 
-        $result = $execution->result();
+        $memoryMb = (float) (memory_get_peak_usage(true) / 1024 / 1024);
+
+        $result = $execution->result($memoryMb);
 
         if ($result !== null) {
             $this->output->writeln(json_encode($result, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));

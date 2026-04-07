@@ -56,7 +56,7 @@ it('does not break when running with process isolation', function (): void {
     $output = decodeOutput(runWith('phpunit', 'PassingTest', extraArgs: ['--process-isolation']));
 
     expect($output['result'])->toBe('passed')
-        ->and($output['tests'])->toBe(2);
+        ->and($output['tests'])->toBe(3);
 });
 
 it('does not break tests that use ob_start', function (): void {

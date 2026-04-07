@@ -345,3 +345,51 @@ it('falls back to line 0 when message has no file reference', function (): void 
 
     @unlink($file);
 });
+
+it('includes memory_mb in result', function (): void {
+    $file = writeXml('<?xml version="1.0"?>
+    <testsuites>
+      <testsuite name="default" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.001">
+        <testcase name="test_ok" file="tests/OkTest.php" line="5" class="Tests\OkTest" assertions="1" time="0.001"/>
+      </testsuite>
+    </testsuites>');
+
+    $result = JunitParser::parse($file, 46.5);
+
+    expect($result['memory_mb'])->toBe(46.5);
+
+    @unlink($file);
+});
+
+it('includes slow_tests when threshold is exceeded', function (): void {
+    $file = writeXml('<?xml version="1.0"?>
+    <testsuites>
+      <testsuite name="default" tests="2" assertions="2" errors="0" failures="0" skipped="0" time="1.500">
+        <testcase name="test_fast" file="tests/FastTest.php" line="5" class="Tests\FastTest" assertions="1" time="0.100"/>
+        <testcase name="test_slow" file="tests/SlowTest.php" line="5" class="Tests\SlowTest" assertions="1" time="1.400"/>
+      </testsuite>
+    </testsuites>');
+
+    $result = JunitParser::parse($file, 0, 500);
+
+    expect($result['slow_tests'])->toHaveCount(1)
+        ->and($result['slow_tests'][0]['name'])->toBe('Tests\SlowTest::test_slow')
+        ->and($result['slow_tests'][0]['duration_ms'])->toBe(1400);
+
+    @unlink($file);
+});
+
+it('omits slow_tests when none exceed threshold', function (): void {
+    $file = writeXml('<?xml version="1.0"?>
+    <testsuites>
+      <testsuite name="default" tests="1" assertions="1" errors="0" failures="0" skipped="0" time="0.100">
+        <testcase name="test_fast" file="tests/FastTest.php" line="5" class="Tests\FastTest" assertions="1" time="0.100"/>
+      </testsuite>
+    </testsuites>');
+
+    $result = JunitParser::parse($file, 0, 500);
+
+    expect($result)->not->toHaveKey('slow_tests');
+
+    @unlink($file);
+});

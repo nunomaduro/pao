@@ -1,15 +1,31 @@
 <?php
 
 declare(strict_types=1);
+use Tests\Fixtures\PassingTest;
 
 it('outputs json for passing tests', function (): void {
     $output = decodeOutput(runWith('phpunit', 'PassingTest'));
 
     expect($output['result'])->toBe('passed')
-        ->and($output['tests'])->toBe(2)
-        ->and($output['passed'])->toBe(2)
+        ->and($output['tests'])->toBe(3)
+        ->and($output['passed'])->toBe(3)
+        ->and($output['memory_mb'])->toBeGreaterThan(0)
         ->and($output)->not->toHaveKey('failed')
         ->and($output)->not->toHaveKey('errors');
+});
+
+it('outputs slow tests when threshold is exceeded', function (): void {
+    $output = decodeOutput(runWith('phpunit', 'PassingTest', extraArgs: ['--slow-tests-threshold=100']));
+
+    expect($output['slow_tests'])->toHaveCount(1)
+        ->and($output['slow_tests'][0]['name'])->toBe(PassingTest::class.'::test_it_is_slow')
+        ->and($output['slow_tests'][0]['duration_ms'])->toBeGreaterThanOrEqual(200);
+});
+
+it('omits slow tests when threshold is not exceeded', function (): void {
+    $output = decodeOutput(runWith('phpunit', 'PassingTest', extraArgs: ['--slow-tests-threshold=5000']));
+
+    expect($output)->not->toHaveKey('slow_tests');
 });
 
 it('outputs json for failing tests', function (): void {

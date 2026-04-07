@@ -94,11 +94,33 @@ To this:
   "result": "passed",
   "tests": 1002,
   "passed": 1002,
-  "duration_ms": 321
+  "duration_ms": 321,
+  "memory_mb": 46.5
 }
 ```
 
 🤯 That's up to **99.8% fewer AI tokens**. The output is **constant-size** regardless of how many tests you have — and when tests fail, it includes file paths, line numbers, and failure messages.
+
+When tests are slow, you can identify them by passing a custom threshold (default is `500`ms):
+
+```bash
+vendor/bin/pest --slow-tests-threshold=100
+```
+
+Which adds a `slow_tests` array to the JSON:
+
+```json
+{
+  "result": "passed",
+  "tests": 1002,
+  "passed": 1002,
+  "duration_ms": 1520,
+  "memory_mb": 46.5,
+  "slow_tests": [
+    { "name": "UserTest::it_imports_bulk", "duration_ms": 1240 }
+  ]
+}
+```
 
 Extra output from Pest plugins like `--coverage` or `--profile` is captured, cleaned of ANSI codes and decorations, and included as an `output` array in the JSON:
 
@@ -108,6 +130,7 @@ Extra output from Pest plugins like `--coverage` or `--profile` is captured, cle
   "tests": 1002,
   "passed": 1002,
   "duration_ms": 1520,
+  "memory_mb": 46.5,
   "output": [
     "Http/Controllers/Controller 100.0%",
     "Models/User 0.0%",

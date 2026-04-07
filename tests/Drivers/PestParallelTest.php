@@ -8,8 +8,8 @@ it('outputs json for passing tests', function () use ($extraArgs): void {
     $output = decodeOutput(runWith('pest', 'PassingTest', extraArgs: $extraArgs));
 
     expect($output['result'])->toBe('passed')
-        ->and($output['tests'])->toBe(2)
-        ->and($output['passed'])->toBe(2)
+        ->and($output['tests'])->toBe(3)
+        ->and($output['passed'])->toBe(3)
         ->and($output)->not->toHaveKey('failed')
         ->and($output)->not->toHaveKey('errors');
 });
