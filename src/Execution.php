@@ -17,7 +17,7 @@ use Random\RandomException;
  * @codeCoverageIgnore
  *
  * @phpstan-type TestDetail array{test: string, file: string, line: int, message: string}
- * @phpstan-type Result array{result: 'passed'|'failed', tests: int, passed: int, duration_ms: int, failed?: int, failures?: list<TestDetail>, errors?: int, error_details?: list<TestDetail>, skipped?: int, output?: list<string>}
+ * @phpstan-type Result array{result: 'passed'|'failed', tests: int, passed: int, duration_ms: int, failed?: int, failures?: list<TestDetail>, errors?: int, error_details?: list<TestDetail>, skipped?: int, raw?: list<string>}
  */
 final class Execution
 {
