@@ -15,6 +15,10 @@ jobs:
         exclude:
           - php: '8.3'
             pest: '5'
+          - php: '8.3'
+            pest: '4'
+            os: windows-latest
+            dependency-version: prefer-lowest
 
     name: Tests P${{ matrix.php }} - Pest ${{ matrix.pest }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}
     continue-on-error: ${{ matrix.pest == '5' }}
