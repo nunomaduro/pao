@@ -295,3 +295,69 @@ it('falls back to line 0 when message has no file reference', function (): void 
     expect($result['failures'][0]['file'])->toBe('tests/PestTest.php::it fails')
         ->and($result['failures'][0]['line'])->toBe(0);
 });
+
+it('does not include profile when --profile is not in argv', function (): void {
+    $_SERVER['argv'] = ['pest', '--no-output'];
+
+    $result = junitParse('<?xml version="1.0"?>
+    <testsuites>
+      <testsuite name="default" tests="3" assertions="3" errors="0" failures="0" skipped="0" time="0.050">
+        <testsuite name="Tests\ExampleTest" file="tests/ExampleTest.php" tests="3" assertions="3" errors="0" failures="0" skipped="0" time="0.050">
+          <testcase name="test_one" file="tests/ExampleTest.php" line="10" class="Tests\ExampleTest" assertions="1" time="0.010"/>
+          <testcase name="test_two" file="tests/ExampleTest.php" line="15" class="Tests\ExampleTest" assertions="1" time="0.020"/>
+          <testcase name="test_three" file="tests/ExampleTest.php" line="20" class="Tests\ExampleTest" assertions="1" time="0.020"/>
+        </testsuite>
+      </testsuite>
+    </testsuites>');
+
+    expect($result)->not->toHaveKey('profile');
+});
+
+it('includes profile sorted by duration_ms descending when --profile is in argv', function (): void {
+    $_SERVER['argv'] = ['pest', '--profile'];
+
+    $result = junitParse('<?xml version="1.0"?>
+    <testsuites>
+      <testsuite name="default" tests="4" assertions="4" errors="0" failures="0" skipped="0" time="0.100">
+        <testsuite name="Tests\SlowTest" file="tests/SlowTest.php" tests="4" assertions="4" errors="0" failures="0" skipped="0" time="0.100">
+          <testcase name="test_fast" file="tests/SlowTest.php" line="10" class="Tests\SlowTest" assertions="1" time="0.010"/>
+          <testcase name="test_medium" file="tests/SlowTest.php" line="20" class="Tests\SlowTest" assertions="1" time="0.030"/>
+          <testcase name="test_slow" file="tests/SlowTest.php" line="30" class="Tests\SlowTest" assertions="1" time="0.050"/>
+          <testcase name="test_ok" file="tests/SlowTest.php" line="40" class="Tests\SlowTest" assertions="1" time="0.010"/>
+        </testsuite>
+      </testsuite>
+    </testsuites>');
+
+    expect($result)->toHaveKey('profile')
+        ->and($result['profile'])->toHaveCount(4)
+        ->and($result['profile'][0]['test'])->toBe('Tests\SlowTest::test_slow')
+        ->and($result['profile'][0]['duration_ms'])->toBe(50)
+        ->and($result['profile'][1]['test'])->toBe('Tests\SlowTest::test_medium')
+        ->and($result['profile'][1]['duration_ms'])->toBe(30)
+        ->and($result['profile'][2]['duration_ms'])->toBeGreaterThanOrEqual($result['profile'][3]['duration_ms']);
+});
+
+it('limits profile to top 10 slowest tests', function (): void {
+    $_SERVER['argv'] = ['pest', '--profile'];
+
+    $testcases = '';
+    for ($i = 1; $i <= 15; $i++) {
+        $time = number_format($i * 0.01, 3);
+        $testcases .= "          <testcase name=\"test_{$i}\" file=\"tests/BigTest.php\" line=\"{$i}0\" class=\"Tests\BigTest\" assertions=\"1\" time=\"{$time}\"/>\n";
+    }
+
+    $result = junitParse("<?xml version=\"1.0\"?>
+    <testsuites>
+      <testsuite name=\"default\" tests=\"15\" assertions=\"15\" errors=\"0\" failures=\"0\" skipped=\"0\" time=\"1.200\">
+        <testsuite name=\"Tests\BigTest\" file=\"tests/BigTest.php\" tests=\"15\" assertions=\"15\" errors=\"0\" failures=\"0\" skipped=\"0\" time=\"1.200\">
+{$testcases}        </testsuite>
+      </testsuite>
+    </testsuites>");
+
+    expect($result)->toHaveKey('profile')
+        ->and($result['profile'])->toHaveCount(10)
+        ->and($result['profile'][0]['test'])->toBe('Tests\BigTest::test_15')
+        ->and($result['profile'][0]['duration_ms'])->toBe(150)
+        ->and($result['profile'][9]['test'])->toBe('Tests\BigTest::test_6')
+        ->and($result['profile'][9]['duration_ms'])->toBe(60);
+});
