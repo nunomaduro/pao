@@ -58,6 +58,11 @@ trait JunitParsable
             $duration += (float) $suite['time'];
         }
 
+        $profileEnabled = in_array('--profile', $_SERVER['argv'] ?? [], true);
+
+        /** @var list<array{test: string, file: string, duration_ms: int}> $profileEntries */
+        $profileEntries = [];
+
         foreach ($xml->xpath('//testcase') ?? [] as $testcase) {
             if (property_exists($testcase, 'skipped') && $testcase->skipped !== null) {
                 $skipped++;
@@ -86,6 +91,20 @@ trait JunitParsable
                     'message' => $message,
                 ];
             }
+
+            if ($profileEnabled) {
+                $file = (string) $testcase['file'];
+                $doubleColonPos = strpos($file, '::');
+                if ($doubleColonPos !== false) {
+                    $file = substr($file, 0, $doubleColonPos);
+                }
+
+                $profileEntries[] = [
+                    'test' => (string) $testcase['class'].'::'.(string) $testcase['name'],
+                    'file' => $file,
+                    'duration_ms' => (int) round((float) $testcase['time'] * 1000),
+                ];
+            }
         }
 
         /** @var array<string, mixed> $result */
@@ -108,6 +127,11 @@ trait JunitParsable
 
         if ($skipped > 0) {
             $result['skipped'] = $skipped;
+        }
+
+        if ($profileEntries !== []) {
+            usort($profileEntries, fn (array $a, array $b): int => $b['duration_ms'] <=> $a['duration_ms']);
+            $result['profile'] = array_slice($profileEntries, 0, 10);
         }
 
         return $result;
