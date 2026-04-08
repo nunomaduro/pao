@@ -83,6 +83,8 @@ composer require nunomaduro/pao:^0.1 --dev
 
 That's it. PAO hooks into PHPUnit, Pest, Paratest, and PHPStan automatically through Composer's autoloader. For Laravel projects, a service provider is auto-discovered to clean Artisan command output.
 
+> **🛡️ PAO only activates when it detects an AI agent** (Claude Code, Cursor, Devin, Gemini CLI, etc.). When you or your team run tools directly in the terminal, the output is completely unchanged — same colors, same formatting, same experience. Zero impact on human workflows.
+
 ## ✨ Before & After
 
 Your test suite with **1,000 tests** goes from this:
