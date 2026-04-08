@@ -45,13 +45,7 @@ register_shutdown_function(function (): void {
     $execution->restoreStdout();
 
     if ($captured !== '') {
-        $captured = (string) preg_replace('/\e\[[0-9;]*[A-Za-z]/', '', $captured);
-        $captured = (string) preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/', '', $captured);
-        $captured = (string) preg_replace('/\x{FFFD}/u', '', $captured);
-        $captured = (string) preg_replace('/[─━│┌┐└┘├┤┬┴┼▓░▒═║╔╗╚╝╠╣╦╩╬➜▶►⚠✖✔●◆■▪→←↑↓▕⨯✕]+/u', '', $captured);
-        $captured = (string) preg_replace('/\.{3,}/', ' ', $captured);
-        $captured = (string) preg_replace('/[ \t]+/', ' ', $captured);
-        $captured = (string) preg_replace('/\n\s*\n/', "\n", $captured);
+        $captured = OutputCleaner::clean($captured);
 
         $lines = array_values(array_filter(
             array_map(trim(...), explode("\n", $captured)),
