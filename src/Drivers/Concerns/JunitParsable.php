@@ -58,7 +58,10 @@ trait JunitParsable
             $duration += (float) $suite['time'];
         }
 
-        $profileEnabled = in_array('--profile', $_SERVER['argv'] ?? [], true);
+        /** @var list<string> $argv */
+        $argv = $_SERVER['argv'] ?? [];
+
+        $profileEnabled = in_array('--profile', $argv, true);
 
         /** @var list<array{test: string, file: string, duration_ms: int}> $profileEntries */
         $profileEntries = [];
@@ -100,7 +103,7 @@ trait JunitParsable
                 }
 
                 $profileEntries[] = [
-                    'test' => (string) $testcase['class'].'::'.(string) $testcase['name'],
+                    'test' => $testcase['class'].'::'.$testcase['name'],
                     'file' => $file,
                     'duration_ms' => (int) round((float) $testcase['time'] * 1000),
                 ];
