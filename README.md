@@ -36,24 +36,42 @@ PAO output is **constant at ~20 tokens** — no matter how large your test suite
 
 > 💡 **The bigger your test suite, the more you save.** Pest goes from **11,125 → 20 tokens** at 1,000 tests. That's **99.8% fewer tokens** your AI agent needs to process!
 
+### 🔍 PHPStan
+
+| Scenario | Without PAO | With PAO ⚡️ | Reduction |
+|---|---|---|---|
+| Clean (0 errors) | ~50 tokens | **5 tokens** | 🟢 **90%** |
+| 10 errors | ~250 tokens | **~100 tokens** | 🟢 **60%** |
+
+### 🛠️ Laravel Artisan
+
+| Command | Without PAO | With PAO ⚡️ | Reduction |
+|---|---|---|---|
+| `about` | 528 tokens | **134 tokens** | 🔥 **74%** |
+| `db:show` | 390 tokens | **102 tokens** | 🔥 **73%** |
+| `migrate:status` | 82 tokens | **46 tokens** | 🟢 **44%** |
+
 ### 💰 Cost Savings Per Session
 
-A single run saves ~10K tokens with Pest. But in a real coding session you might run your test suite **20-50+ times**. With **1,000 Pest tests** and **50 runs**, that's **~500K tokens saved**:
+A single run saves ~10K tokens with Pest. But in a real coding session you might run your test suite **20-50+ times** and Artisan commands **10-20+ times**. With **1,000 Pest tests** and **50 runs**, that's **~500K tokens saved**:
 
-| Model | 50 runs without PAO | 50 runs with PAO ⚡️ | Saved per session |
+| Model | 50 test runs without PAO | 50 test runs with PAO ⚡️ | Saved per session |
 |---|---|---|---|
 | Sonnet 4 | $1.52 | $0.003 | 🟢 **$1.52** |
 | Opus 4 | $7.58 | $0.015 | 🔥 **$7.56** |
 
+Add in 20 Artisan commands (`about`, `db:show`, `migrate:status`, etc.) and PHPStan runs per session, and the savings compound further — both in cost and context window space.
+
 <details>
 <summary>How this was calculated</summary>
 
-- **Token counts** measured by running `vendor/bin/pest` with 1,002 tests (100 test files, 10 tests each + 2 feature tests) in a Laravel app, counting output characters and estimating ~4 characters per token
+- **Test token counts** measured by running `vendor/bin/pest` with 1,002 tests (100 test files, 10 tests each + 2 feature tests) in a Laravel app, counting output characters and estimating ~4 characters per token
+- **Artisan token counts** measured by running `php artisan about`, `db:show`, and `migrate:status` in a Laravel 13 app with default configuration
 - **Cost per token**: based on published input pricing as of March 2026 — Sonnet 4 at $3/MTok, Opus 4 at $15/MTok
-- **Assumes**: test output counts as input tokens (agent reads the output). Does not account for output tokens, caching, or batch discounts
+- **Assumes**: tool output counts as input tokens (agent reads the output). Does not account for output tokens, caching, or batch discounts
 </details>
 
-But the real win isn't cost — it's **context window space**. Every test run without PAO dumps 10K+ tokens of dots, checkmarks, and stack traces into your agent's context. After 50 runs, that's **500K tokens of test output competing with your actual code, conversation, and reasoning** for the same limited context window. PAO keeps that to ~1K tokens total — freeing your agent to focus on what matters.
+But the real win isn't cost — it's **context window space**. Every test run without PAO dumps 10K+ tokens of dots, checkmarks, and stack traces into your agent's context. Every Artisan command adds hundreds of tokens of dot separators and box-drawing characters. After a full coding session, that's **hundreds of thousands of tokens of decorative output competing with your actual code, conversation, and reasoning** for the same limited context window. PAO keeps all of that minimal — freeing your agent to focus on what matters.
 
 ## ⚡️ Installation
 
