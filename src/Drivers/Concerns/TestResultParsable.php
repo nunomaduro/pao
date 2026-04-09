@@ -157,7 +157,7 @@ trait TestResultParsable
 
         /** @var array<string, mixed> $result */
         $result = [
-            'result' => ($failedCount > 0 || $erroredCount > 0) ? 'failed' : 'passed',
+            'result' => $testResult->wasSuccessful() ? 'passed' : 'failed',
             'tests' => $tests,
             'passed' => $tests - $failedCount - $erroredCount - $skipped,
             'assertions' => $assertions,
@@ -201,6 +201,13 @@ trait TestResultParsable
             $result['notice_details'] = $this->extractIssueDetails(
                 [...$testResult->notices(), ...$testResult->phpNotices()],
             );
+        }
+
+        $phpErrors = $testResult->errors();
+
+        if ($phpErrors !== []) {
+            $result['php_errors'] = count($phpErrors);
+            $result['php_error_details'] = $this->extractIssueDetails($phpErrors);
         }
 
         if ($risky > 0) {
