@@ -19,7 +19,7 @@
 
 **PAO** is agent-optimized output for PHP tools. It works with any PHP project — **Laravel**, **Symfony**, **Laminas**, **vanilla PHP**, or anything else that uses **PHPUnit**, **Pest**, **Paratest**, **PHPStan**, or **Laravel Artisan**.
 
-It detects when your tools are running inside an AI agent — **Claude Code**, **Cursor**, **Devin**, **Gemini CLI**, and others — and replaces the verbose, human-readable output with compact, super minimal, structured JSON. For Laravel Artisan commands, it strips ANSI colors, box-drawing characters, and excess whitespace. Zero config — just install and it works.
+It detects when your tools are running inside an AI agent — **Claude Code**, **Cursor**, **Devin**, **Gemini CLI**, and others — and replaces the verbose, human-readable output with compact, super minimal, structured JSON (or optionally YAML via `PAO_FORMAT=yaml`). For Laravel Artisan commands, it strips ANSI colors, box-drawing characters, and excess whitespace. Zero config — just install and it works.
 
 ## 🔥 Benchmarks
 
@@ -84,6 +84,28 @@ composer require nunomaduro/pao:^0.1 --dev
 That's it. PAO hooks into PHPUnit, Pest, Paratest, and PHPStan automatically through Composer's autoloader. For Laravel projects, a service provider is auto-discovered to clean Artisan command output.
 
 > **🛡️ PAO only activates when it detects an AI agent** (Claude Code, Cursor, Devin, Gemini CLI, etc.). When you or your team run tools directly in the terminal, the output is completely unchanged — same colors, same formatting, same experience. Zero impact on human workflows.
+
+## ⚙️ Configuration
+
+PAO is configured through environment variables:
+
+| Variable | Values | Default | Description |
+|---|---|---|---|
+| `PAO_DISABLE` | any value | *(unset)* | Disable PAO entirely |
+| `PAO_FORMAT` | `json`, `yaml` | `json` | Output format |
+
+### YAML Output
+
+Set `PAO_FORMAT=yaml` to get human-readable YAML instead of JSON:
+
+```yaml
+result: passed
+tests: 1002
+passed: 1002
+duration_ms: 321
+```
+
+This can be useful when reviewing agent output directly in the terminal. JSON remains the default.
 
 ## ✨ Before & After
 
