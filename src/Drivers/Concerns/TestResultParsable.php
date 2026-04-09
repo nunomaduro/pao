@@ -99,11 +99,11 @@ trait TestResultParsable
     {
         $failedCount = $testResult->numberOfTestFailedEvents();
         $erroredCount = $testResult->numberOfTestErroredEvents();
-        $skipped = $testResult->numberOfTestSkippedEvents();
+        $skipped = $testResult->numberOfTestSkippedEvents() + $testResult->numberOfTestSkippedByTestSuiteSkippedEvents();
         $incomplete = $testResult->numberOfTestMarkedIncompleteEvents();
         $tests = $testResult->numberOfTestsRun();
         $assertions = $testResult->numberOfAssertions();
-        $deprecations = $testResult->numberOfDeprecations();
+        $deprecations = $testResult->numberOfPhpOrUserDeprecations();
         $warnings = $testResult->numberOfWarnings();
         $notices = $testResult->numberOfNotices();
         $risky = $testResult->numberOfTestsWithTestConsideredRiskyEvents();
