@@ -10,6 +10,7 @@ function runWith(string $binary, string $filter, bool $withAgent = true, array $
         'AI_AGENT' => $withAgent ? '1' : false,
         'CLAUDECODE' => false,
         'CLAUDE_CODE' => false,
+        'PAO_FORMAT' => false,
     ];
 
     $command = [PHP_BINARY, 'vendor/bin/'.$binary, '--configuration', $config, '--filter', $filter, ...$extraArgs];
@@ -51,6 +52,7 @@ function runPhpstan(string $configPath, bool $withAgent = true, array $extraArgs
         'AI_AGENT' => $withAgent ? '1' : false,
         'CLAUDECODE' => false,
         'CLAUDE_CODE' => false,
+        'PAO_FORMAT' => false,
     ];
 
     $command = [PHP_BINARY, 'vendor/bin/phpstan', 'analyse', '--configuration', $configPath, ...$extraArgs];
