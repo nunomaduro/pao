@@ -50,27 +50,31 @@ it('outputs json for deprecation tests', function (): void {
     $output = decodeOutput(runWith('phpunit', 'DeprecationTest'));
 
     expect($output['result'])->toBe('passed')
-        ->and($output['tests'])->toBe(1);
+        ->and($output['tests'])->toBe(1)
+        ->and($output['deprecations'])->toBe(1);
 });
 
 it('outputs json for warning tests', function (): void {
     $output = decodeOutput(runWith('phpunit', 'WarningTest'));
 
     expect($output['result'])->toBe('passed')
-        ->and($output['tests'])->toBe(1);
+        ->and($output['tests'])->toBe(1)
+        ->and($output['warnings'])->toBe(1);
 });
 
 it('outputs json for notice tests', function (): void {
     $output = decodeOutput(runWith('phpunit', 'NoticeTest'));
 
     expect($output['result'])->toBe('passed')
-        ->and($output['tests'])->toBe(1);
+        ->and($output['tests'])->toBe(1)
+        ->and($output['notices'])->toBe(1);
 });
 
 it('outputs json for risky tests', function (): void {
     $output = decodeOutput(runWith('phpunit', 'RiskyTest'));
 
-    expect($output['tests'])->toBe(1);
+    expect($output['tests'])->toBe(1)
+        ->and($output['risky'])->toBe(1);
 });
 
 it('outputs json for data provider tests', function (): void {

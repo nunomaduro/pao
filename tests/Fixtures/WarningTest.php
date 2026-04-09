@@ -10,7 +10,7 @@ final class WarningTest extends TestCase
 {
     public function test_it_triggers_warning(): void
     {
-        @trigger_error('Something looks wrong', E_USER_WARNING);
+        trigger_error('Something looks wrong', E_USER_WARNING);
 
         $this->assertTrue(true);
     }

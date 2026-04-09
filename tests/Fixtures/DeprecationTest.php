@@ -10,7 +10,7 @@ final class DeprecationTest extends TestCase
 {
     public function test_it_triggers_deprecation(): void
     {
-        @trigger_error('This function is deprecated', E_USER_DEPRECATED);
+        trigger_error('This function is deprecated', E_USER_DEPRECATED);
 
         $this->assertTrue(true);
     }
