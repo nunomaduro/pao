@@ -24,7 +24,10 @@ final class Starter extends BaseStarter
         $serverArgv = $_SERVER['argv'];
 
         $argv = $this->ensureJunitLog($serverArgv);
-        $argv[] = '--no-output';
+
+        if (! in_array('--no-output', $argv, true)) {
+            $argv[] = '--no-output';
+        }
 
         $_SERVER['argv'] = $argv;
     }
