@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pao\Drivers\Paratest;
 
+use Pao\Drivers\Concerns\ProfileCollector;
 use Pao\Execution;
 use ParaTest\Options;
 use ParaTest\RunnerInterface;
@@ -63,9 +64,13 @@ final readonly class WrapperRunner implements RunnerInterface
         $printer->setTestCount($suiteLoader->testCount);
         $printer->start();
 
+        $startTime = hrtime(true);
+
         $r->getMethod('startWorkers')->invoke($runner);
         $r->getMethod('assignAllPendingTests')->invoke($runner);
         $r->getMethod('waitForAllToFinish')->invoke($runner);
+
+        ProfileCollector::startTimerFromNanoseconds($startTime);
 
         /** @var list<SplFileInfo> $testResultFiles */
         $testResultFiles = $r->getProperty('testResultFiles')->getValue($runner);

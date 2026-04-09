@@ -39,6 +39,14 @@ final class ProfileCollector
         self::$startTime = $time;
     }
 
+    public static function startTimerFromNanoseconds(float $nanoseconds): void
+    {
+        $seconds = (int) ($nanoseconds / 1_000_000_000);
+        $nanos = (int) ($nanoseconds - ($seconds * 1_000_000_000));
+
+        self::$startTime = HRTime::fromSecondsAndNanoseconds($seconds, $nanos);
+    }
+
     public static function durationMs(): int
     {
         if (! self::$startTime instanceof HRTime) {
