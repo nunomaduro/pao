@@ -1,7 +1,7 @@
 {
     "name": "nunomaduro/pao",
     "description": "Agent-optimized output for PHP testing tools",
-    "keywords": ["php", "phpunit", "pest", "paratest", "phpstan", "agent", "testing", "json"],
+    "keywords": ["php", "phpunit", "pest", "paratest", "phpstan", "agent", "testing", "json", "dev"],
     "license": "MIT",
     "authors": [
         {
