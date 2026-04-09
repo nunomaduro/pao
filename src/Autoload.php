@@ -60,7 +60,7 @@ register_shutdown_function(function (): void {
     }
 
     if ($result !== []) {
-        fwrite(STDOUT, json_encode($result, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR).PHP_EOL);
+        fwrite(STDOUT, Formatters\OutputFormatter::format($result).PHP_EOL);
     }
 });
 
