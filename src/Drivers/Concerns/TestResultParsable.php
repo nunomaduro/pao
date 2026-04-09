@@ -67,7 +67,7 @@ trait TestResultParsable
     {
         $testResult = $this->resolveTestResult();
 
-        if ($testResult instanceof TestResult && $testResult->numberOfTestsRun() > 0) {
+        if ($testResult instanceof TestResult) {
             return $this->parseTestResult($testResult);
         }
 
