@@ -17,13 +17,14 @@ final class OutputFormatter
     public static function format(array $data): string
     {
         return match (self::resolveFormat()) {
+            'pretty' => json_encode($data, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT),
             'yaml' => rtrim(Yaml::dump($data, 4, 2)),
             default => json_encode($data, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR),
         };
     }
 
     /**
-     * @return 'json'|'yaml'
+     * @return 'json'|'pretty'|'yaml'
      */
     public static function resolveFormat(): string
     {
@@ -31,10 +32,9 @@ final class OutputFormatter
         $raw = $_SERVER['PAO_FORMAT'] ?? 'json';
         $format = strtolower(trim($raw));
 
-        if ($format === 'yaml') {
-            return 'yaml';
-        }
-
-        return 'json';
+        return match ($format) {
+            'pretty', 'yaml' => $format,
+            default => 'json',
+        };
     }
 }

@@ -185,6 +185,33 @@ it('yaml round-trips clean phpstan result', function (): void {
     expect($decoded)->toBe($data);
 });
 
+it('pretty json round-trips a complex failed result', function (): void {
+    $_SERVER['PAO_FORMAT'] = 'pretty';
+
+    $data = [
+        'result' => 'failed',
+        'tests' => 10,
+        'passed' => 6,
+        'duration_ms' => 2500,
+        'failed' => 2,
+        'failures' => [
+            ['test' => 'TestA::testOne', 'file' => '/app/tests/TestA.php', 'line' => 10, 'message' => 'Expected true'],
+        ],
+        'errors' => 1,
+        'error_details' => [
+            ['test' => 'TestB::testTwo', 'file' => '/app/tests/TestB.php', 'line' => 5, 'message' => 'Division by zero'],
+        ],
+    ];
+
+    $output = OutputFormatter::format($data);
+    $decoded = json_decode($output, associative: true, flags: JSON_THROW_ON_ERROR);
+
+    expect($decoded)->toBe($data)
+        ->and($output)->toContain("\n");
+
+    $_SERVER['PAO_FORMAT'] = 'yaml';
+});
+
 it('json round-trips a passing test result', function (): void {
     unset($_SERVER['PAO_FORMAT']);
 

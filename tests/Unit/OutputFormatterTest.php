@@ -50,6 +50,31 @@ it('handles PAO_FORMAT case insensitively', function (): void {
     unset($_SERVER['PAO_FORMAT']);
 });
 
+it('resolves pretty format', function (): void {
+    $_SERVER['PAO_FORMAT'] = 'pretty';
+
+    expect(OutputFormatter::resolveFormat())->toBe('pretty');
+
+    unset($_SERVER['PAO_FORMAT']);
+});
+
+it('outputs pretty json when PAO_FORMAT is pretty', function (): void {
+    $_SERVER['PAO_FORMAT'] = 'pretty';
+
+    $data = ['result' => 'passed', 'tests' => 1, 'passed' => 1, 'duration_ms' => 10];
+
+    $output = OutputFormatter::format($data);
+
+    expect($output)->toContain("\n")
+        ->and($output)->toContain('    "result": "passed"');
+
+    $decoded = json_decode($output, associative: true, flags: JSON_THROW_ON_ERROR);
+
+    expect($decoded)->toBe($data);
+
+    unset($_SERVER['PAO_FORMAT']);
+});
+
 it('falls back to json for unknown formats', function (): void {
     $_SERVER['PAO_FORMAT'] = 'xml';
 

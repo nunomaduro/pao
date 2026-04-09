@@ -92,11 +92,24 @@ PAO is configured through environment variables:
 | Variable | Values | Default | Description |
 |---|---|---|---|
 | `PAO_DISABLE` | any value | *(unset)* | Disable PAO entirely |
-| `PAO_FORMAT` | `json`, `yaml` | `json` | Output format |
+| `PAO_FORMAT` | `json`, `pretty`, `yaml` | `json` | Output format |
 
-### YAML Output
+### Pretty JSON
 
-Set `PAO_FORMAT=yaml` to get human-readable YAML instead of JSON:
+Set `PAO_FORMAT=pretty` for human-readable JSON:
+
+```json
+{
+    "result": "passed",
+    "tests": 1002,
+    "passed": 1002,
+    "duration_ms": 321
+}
+```
+
+### YAML
+
+Set `PAO_FORMAT=yaml` for YAML output:
 
 ```yaml
 result: passed
@@ -105,7 +118,7 @@ passed: 1002
 duration_ms: 321
 ```
 
-This can be useful when reviewing agent output directly in the terminal. JSON remains the default.
+Both options are useful when reviewing agent output directly in the terminal. JSON remains the default.
 
 ## ✨ Before & After
 
