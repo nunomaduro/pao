@@ -28,12 +28,8 @@ trait TestResultParsable
 {
     public ?TestResult $testResult = null;
 
-    private float $startTime = 0.0;
-
     protected function startTimer(): void
     {
-        $this->startTime = hrtime(true);
-
         try {
             EventFacade::instance()->registerSubscriber(
                 new class implements ExecutionStartedSubscriber
@@ -41,6 +37,7 @@ trait TestResultParsable
                     public function notify(ExecutionStarted $event): void
                     {
                         ProfileCollector::executionStarted();
+                        ProfileCollector::startTimer($event->telemetryInfo()->time());
                     }
                 },
             );
@@ -129,9 +126,7 @@ trait TestResultParsable
         $risky = $testResult->numberOfTestsWithTestConsideredRiskyEvents();
         $ignoredByBaseline = $testResult->numberOfIssuesIgnoredByBaseline();
 
-        $durationMs = $this->startTime > 0
-            ? (int) round((hrtime(true) - $this->startTime) / 1_000_000)
-            : 0;
+        $durationMs = ProfileCollector::durationMs();
 
         /** @var list<array{test: string, file: string, line: int, message: string}> $failureDetails */
         $failureDetails = [];

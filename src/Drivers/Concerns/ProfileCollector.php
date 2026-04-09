@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pao\Drivers\Concerns;
 
 use PHPUnit\Event\Code\TestMethod;
+use PHPUnit\Event\Telemetry\HRTime;
 use PHPUnit\Event\Test\Finished;
 
 /**
@@ -15,6 +16,8 @@ use PHPUnit\Event\Test\Finished;
 final class ProfileCollector
 {
     private static bool $executionStarted = false;
+
+    private static ?HRTime $startTime = null;
 
     private static float $preparedAt = 0.0;
 
@@ -29,6 +32,22 @@ final class ProfileCollector
     public static function hasExecutionStarted(): bool
     {
         return self::$executionStarted;
+    }
+
+    public static function startTimer(HRTime $time): void
+    {
+        self::$startTime = $time;
+    }
+
+    public static function durationMs(): int
+    {
+        if (! self::$startTime instanceof HRTime) {
+            return 0;
+        }
+
+        $startNs = (self::$startTime->seconds() * 1_000_000_000) + self::$startTime->nanoseconds();
+
+        return (int) round((hrtime(true) - $startNs) / 1_000_000);
     }
 
     public static function prepared(): void
