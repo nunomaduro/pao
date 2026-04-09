@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pao\Drivers\Pest;
 
-use Pao\Drivers\Concerns\JunitParsable;
+use Pao\Drivers\Concerns\TestResultParsable;
 use Pao\Drivers\Starter as BaseStarter;
 
 /**
@@ -14,12 +14,20 @@ use Pao\Drivers\Starter as BaseStarter;
  */
 final class Starter extends BaseStarter
 {
-    use JunitParsable;
+    use TestResultParsable;
 
     public function start(): void
     {
         $this->registerNullFilter();
+        $this->startTimer();
         $this->saveStdout();
         $this->silenceStdout();
+
+        /** @var list<string> $argv */
+        $argv = $_SERVER['argv'] ?? [];
+
+        if (! in_array('--parallel', $argv, true)) {
+            $this->registerProfileSubscriber();
+        }
     }
 }

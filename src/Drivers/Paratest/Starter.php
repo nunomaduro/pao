@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pao\Drivers\Paratest;
 
-use Pao\Drivers\Concerns\JunitParsable;
+use Pao\Drivers\Concerns\TestResultParsable;
 use Pao\Drivers\Starter as BaseStarter;
 
 /**
@@ -14,17 +14,18 @@ use Pao\Drivers\Starter as BaseStarter;
  */
 final class Starter extends BaseStarter
 {
-    use JunitParsable;
+    use TestResultParsable;
 
     public function start(): void
     {
         $this->registerNullFilter();
+        $this->startTimer();
         $this->silenceStdout();
 
         /** @var list<string> $serverArgv */
         $serverArgv = $_SERVER['argv'];
 
-        $argv = $this->ensureJunitLog($serverArgv);
+        $argv = $serverArgv;
 
         $argv[] = '--runner';
         $argv[] = WrapperRunner::class;

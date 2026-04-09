@@ -29,10 +29,6 @@ final class Plugin implements HandlesArguments
             return $arguments;
         }
 
-        /** @var Starter $driver */
-        $driver = Execution::current()->driver;
-
-        $arguments = $driver->ensureJunitLog($arguments);
         $arguments[] = '--no-output';
 
         return $arguments;
