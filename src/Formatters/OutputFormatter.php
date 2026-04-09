@@ -17,21 +17,9 @@ final class OutputFormatter
     public static function format(array $data): string
     {
         return match (self::resolveFormat()) {
-            'yaml' => self::formatYaml($data),
+            'yaml' => rtrim(Yaml::dump($data, 4, 2)),
             default => json_encode($data, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR),
         };
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     */
-    private static function formatYaml(array $data): string
-    {
-        if (! class_exists(Yaml::class)) {
-            throw new \RuntimeException('PAO_FORMAT=yaml requires symfony/yaml. Install it with: composer require symfony/yaml --dev');
-        }
-
-        return rtrim(Yaml::dump($data, 4, 2));
     }
 
     /**
