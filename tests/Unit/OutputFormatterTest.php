@@ -118,8 +118,8 @@ it('produces yaml for complex test results', function (): void {
     expect($yaml)->toContain('result: failed')
         ->and($yaml)->toContain('failures:')
         ->and($yaml)->toContain('error_details:')
-        ->and($yaml)->toContain('  - test: "FailTest::it"')
-        ->and($yaml)->toContain('  - test: "ErrTest::it"');
+        ->and($yaml)->toContain("test: 'FailTest::it'")
+        ->and($yaml)->toContain("test: 'ErrTest::it'");
 
     unset($_SERVER['PAO_FORMAT']);
 });
