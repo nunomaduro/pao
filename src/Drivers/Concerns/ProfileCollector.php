@@ -14,10 +14,22 @@ use PHPUnit\Event\Test\Finished;
  */
 final class ProfileCollector
 {
+    private static bool $executionStarted = false;
+
     private static float $preparedAt = 0.0;
 
     /** @var list<array{test: string, file: string, duration_ms: int}> */
     private static array $entries = [];
+
+    public static function executionStarted(): void
+    {
+        self::$executionStarted = true;
+    }
+
+    public static function hasExecutionStarted(): bool
+    {
+        return self::$executionStarted;
+    }
 
     public static function prepared(): void
     {

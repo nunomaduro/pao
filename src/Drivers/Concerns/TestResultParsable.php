@@ -13,6 +13,8 @@ use PHPUnit\Event\Test\Finished;
 use PHPUnit\Event\Test\FinishedSubscriber;
 use PHPUnit\Event\Test\Prepared;
 use PHPUnit\Event\Test\PreparedSubscriber;
+use PHPUnit\Event\TestRunner\ExecutionStarted;
+use PHPUnit\Event\TestRunner\ExecutionStartedSubscriber;
 use PHPUnit\TestRunner\TestResult\Facade as TestResultFacade;
 use PHPUnit\TestRunner\TestResult\Issues\Issue;
 use PHPUnit\TestRunner\TestResult\TestResult;
@@ -31,6 +33,20 @@ trait TestResultParsable
     protected function startTimer(): void
     {
         $this->startTime = hrtime(true);
+
+        try {
+            EventFacade::instance()->registerSubscriber(
+                new class implements ExecutionStartedSubscriber
+                {
+                    public function notify(ExecutionStarted $event): void
+                    {
+                        ProfileCollector::executionStarted();
+                    }
+                },
+            );
+        } catch (\Throwable) {
+            //
+        }
     }
 
     protected function registerProfileSubscriber(): void
@@ -67,7 +83,11 @@ trait TestResultParsable
     {
         $testResult = $this->resolveTestResult();
 
-        if ($testResult instanceof TestResult) {
+        if (! $testResult instanceof TestResult) {
+            return null;
+        }
+
+        if ($testResult->numberOfTestsRun() > 0 || ProfileCollector::hasExecutionStarted()) {
             return $this->parseTestResult($testResult);
         }
 
