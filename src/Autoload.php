@@ -30,6 +30,7 @@ if (array_intersect($argv, ['--version', '--help', '-h', 'worker'])) {
 }
 
 unset($_SERVER['COLLISION_PRINTER']);
+$_SERVER['PEST_PARALLEL_NO_OUTPUT'] = '1';
 
 register_shutdown_function(function (): void {
     if (! Execution::running()) {
