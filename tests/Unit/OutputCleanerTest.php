@@ -17,7 +17,7 @@ it('strips unicode replacement character', function (): void {
 });
 
 it('strips box-drawing characters', function (): void {
-    expect(OutputCleaner::clean('┌──────┐'))->toBeEmpty();
+    expect(OutputCleaner::clean('┌──────┐'))->toBe('');
 });
 
 it('strips decorative symbols', function (): void {
@@ -47,5 +47,5 @@ it('handles combined formatting', function (): void {
 });
 
 it('returns empty string for only decorative content', function (): void {
-    expect(OutputCleaner::clean('├─────────────────────────────┤'))->toBeEmpty();
+    expect(OutputCleaner::clean('├─────────────────────────────┤'))->toBe('');
 });

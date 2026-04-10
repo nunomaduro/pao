@@ -37,7 +37,7 @@ it('preserves user junit file when user also passes log-junit', function (): voi
     expect(file_exists($userJunitFile))->toBeTrue();
 
     $xml = simplexml_load_file($userJunitFile);
-    expect($xml)->toBeTrue();
+    expect($xml)->not->toBeFalse();
 
     @unlink($userJunitFile);
 });
