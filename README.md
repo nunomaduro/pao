@@ -25,7 +25,7 @@ It detects when your tools are running inside an AI agent — **Claude Code**, *
 
 PAO output is **constant at ~20 tokens** — no matter how large your test suite is.
 
-| Tool | Without PAO | With PAO ⚡️ | Tokens Saved | Reduction | 100 runs saved (Opus 4.6) |
+| Tool | Without PAO | With PAO ⚡️ | Tokens Saved | Reduction | 100 runs (Opus 4.6) |
 |---|---|---|---|---|---|
 | **Tests (1,000)** | | | | | |
 | PHPUnit | 402 tokens | **21 tokens** | 381 | 🟢 **95%** | $0.19 |
@@ -36,8 +36,8 @@ PAO output is **constant at ~20 tokens** — no matter how large your test suite
 | Clean (0 errors) | ~50 tokens | **5 tokens** | ~45 | 🟢 **90%** | $0.02 |
 | 10 errors | ~250 tokens | **~100 tokens** | ~150 | 🟢 **60%** | $0.08 |
 | **Artisan** | | | | | |
-| `about` | 528 tokens | **134 tokens** | 394 | 🔥 **74%** | $0.20 |
-| `db:show` | 390 tokens | **102 tokens** | 288 | 🔥 **73%** | $0.14 |
+| `about` | 528 tokens | **134 tokens** | 394 | 🟢 **74%** | $0.20 |
+| `db:show` | 390 tokens | **102 tokens** | 288 | 🟢 **73%** | $0.14 |
 | `migrate:status` | 82 tokens | **46 tokens** | 36 | 🟢 **44%** | $0.02 |
 
 <details>
@@ -56,7 +56,7 @@ But the real win isn't just tokens — it's **structured, machine-readable outpu
 > **Requires [PHP 8.3+](https://php.net/releases/)** — Works with **PHPUnit 12-13**, **Pest 4-5**, **Paratest**, **PHPStan**, and **Laravel 12+**.
 
 ```bash
-composer require nunomaduro/pao:^0.1 --dev
+composer require nunomaduro/pao:^0.1.5 --dev
 ```
 
 That's it. PAO hooks into PHPUnit, Pest, Paratest, and PHPStan automatically through Composer's autoloader. For Laravel projects, a service provider is auto-discovered to clean Artisan command output.
