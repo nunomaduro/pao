@@ -11,7 +11,8 @@ it('outputs json for passing tests', function () use ($extraArgs): void {
         ->and($output['tests'])->toBe(2)
         ->and($output['passed'])->toBe(2)
         ->and($output)->not->toHaveKey('failed')
-        ->and($output)->not->toHaveKey('errors');
+        ->and($output)->not->toHaveKey('errors')
+        ->and($output)->not->toHaveKey('raw');
 });
 
 it('outputs json for failing tests', function () use ($extraArgs): void {
