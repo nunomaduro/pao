@@ -30,7 +30,6 @@ final class Plugin implements HandlesArguments
         }
 
         $arguments[] = '--no-output';
-        $arguments[] = '--no-progress';
 
         return $arguments;
     }

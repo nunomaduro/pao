@@ -44,18 +44,13 @@ register_shutdown_function(function (): void {
 
     $execution->restoreStdout();
 
-    /** @var list<string> $argv */
-    $argv = $_SERVER['argv'] ?? [];
-
-    $isParallel = in_array('--parallel', $argv, true)
-        || $execution->driver instanceof Drivers\Paratest\Starter;
-
-    if ($captured !== '' && ! $isParallel) {
+    if ($captured !== '') {
         $captured = OutputCleaner::clean($captured);
 
         $lines = array_values(array_filter(
             array_map(trim(...), explode("\n", $captured)),
             fn (string $line): bool => $line !== ''
+                && ! preg_match('/^\.+$/', $line)
                 && ! preg_match('/^(Tests:|Duration:|Parallel:|Time:|Generating code coverage)\s/', $line)
                 && ! str_ends_with($line, 'by Sebastian Bergmann and contributors.'),
         ));
