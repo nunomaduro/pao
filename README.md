@@ -25,31 +25,31 @@ It detects when your tools are running inside an AI agent — **Claude Code**, *
 
 PAO output is **constant at ~20 tokens** — no matter how large your test suite is.
 
-| Tool | Without PAO | With PAO ⚡️ | Tokens Saved | Reduction | 50 runs saved (Sonnet 4) | 50 runs saved (Opus 4) |
-|---|---|---|---|---|---|---|
-| **Tests (1,000)** | | | | | | |
-| PHPUnit | 402 tokens | **21 tokens** | 381 | 🟢 **95%** | $0.06 | $0.29 |
-| Paratest | 412 tokens | **21 tokens** | 391 | 🟢 **95%** | $0.06 | $0.29 |
-| Pest --compact | 277 tokens | **21 tokens** | 256 | 🟢 **93%** | $0.04 | $0.19 |
-| Pest --parallel | 283 tokens | **21 tokens** | 262 | 🟢 **93%** | $0.04 | $0.20 |
-| **PHPStan** | | | | | | |
-| Clean (0 errors) | ~50 tokens | **5 tokens** | ~45 | 🟢 **90%** | $0.01 | $0.03 |
-| 10 errors | ~250 tokens | **~100 tokens** | ~150 | 🟢 **60%** | $0.02 | $0.11 |
-| **Artisan** | | | | | | |
-| `about` | 528 tokens | **134 tokens** | 394 | 🔥 **74%** | $0.06 | $0.30 |
-| `db:show` | 390 tokens | **102 tokens** | 288 | 🔥 **73%** | $0.04 | $0.22 |
-| `migrate:status` | 82 tokens | **46 tokens** | 36 | 🟢 **44%** | $0.01 | $0.03 |
+| Tool | Without PAO | With PAO ⚡️ | Tokens Saved | Reduction | 100 runs saved (Opus 4.6) |
+|---|---|---|---|---|---|
+| **Tests (1,000)** | | | | | |
+| PHPUnit | 402 tokens | **21 tokens** | 381 | 🟢 **95%** | $0.19 |
+| Paratest | 412 tokens | **21 tokens** | 391 | 🟢 **95%** | $0.20 |
+| Pest --compact | 277 tokens | **21 tokens** | 256 | 🟢 **93%** | $0.13 |
+| Pest --parallel | 283 tokens | **21 tokens** | 262 | 🟢 **93%** | $0.13 |
+| **PHPStan** | | | | | |
+| Clean (0 errors) | ~50 tokens | **5 tokens** | ~45 | 🟢 **90%** | $0.02 |
+| 10 errors | ~250 tokens | **~100 tokens** | ~150 | 🟢 **60%** | $0.08 |
+| **Artisan** | | | | | |
+| `about` | 528 tokens | **134 tokens** | 394 | 🔥 **74%** | $0.20 |
+| `db:show` | 390 tokens | **102 tokens** | 288 | 🔥 **73%** | $0.14 |
+| `migrate:status` | 82 tokens | **46 tokens** | 36 | 🟢 **44%** | $0.02 |
 
 <details>
 <summary>How this was calculated</summary>
 
 - **Test token counts** measured by running each runner with 1,002 tests (100 test files, 10 tests each + 2 feature tests) in a Laravel app, counting output characters and estimating ~4 characters per token. Pest baselines use `--compact` (the recommended mode for AI agents)
 - **Artisan token counts** measured by running `php artisan about`, `db:show`, and `migrate:status` in a Laravel 13 app with default configuration
-- **Cost per token**: based on published input pricing as of March 2026 — Sonnet 4 at $3/MTok, Opus 4 at $15/MTok
+- **Cost per token**: based on published input pricing — Claude Opus 4.6 at $5/MTok
 - **Assumes**: tool output counts as input tokens (agent reads the output). Does not account for output tokens, caching, or batch discounts
 </details>
 
-But the real win isn't just tokens — it's **structured, machine-readable output**. Without PAO, your agent parses dots, checkmarks, and ANSI escape codes. With PAO, it gets JSON with file paths, line numbers, and failure messages — enabling faster, more accurate fixes. And after a full coding session with 50+ test runs, those saved tokens add up to **meaningful context window space** freed for your actual code and conversation.
+But the real win isn't just tokens — it's **structured, machine-readable output**. Without PAO, your agent parses dots, checkmarks, and ANSI escape codes. With PAO, it gets JSON with file paths, line numbers, and failure messages — enabling faster, more accurate fixes. And after a full coding session with 100+ test runs, those saved tokens add up to **meaningful context window space** freed for your actual code and conversation.
 
 ## ⚡️ Installation
 
