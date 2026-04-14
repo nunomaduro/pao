@@ -255,5 +255,4 @@ final class HasManyErrors
     {
         return 'string50';
     }
-
 }

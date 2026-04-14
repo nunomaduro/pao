@@ -139,20 +139,20 @@ PHPStan output is also converted to structured JSON:
 {
   "result": "failed",
   "errors": 2,
-  "error_details": [
-    {
-      "file": "/app/Http/Controllers/Controller.php",
-      "line": 9,
-      "message": "Method Controller::index() should return int but returns string.",
-      "identifier": "return.type"
-    },
-    {
-      "file": "/app/Http/Controllers/Controller.php",
-      "line": 14,
-      "message": "Call to an undefined method Controller::doesNotExist().",
-      "identifier": "method.notFound"
-    }
-  ]
+  "error_details": {
+    "/app/Http/Controllers/Controller.php": [
+      {
+        "line": 9,
+        "message": "Method Controller::index() should return int but returns string.",
+        "identifier": "return.type"
+      },
+      {
+        "line": 14,
+        "message": "Call to an undefined method Controller::doesNotExist().",
+        "identifier": "method.notFound"
+      }
+    ]
+  }
 }
 ```
 

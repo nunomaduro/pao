@@ -75,12 +75,12 @@ it('returns failed with error details', function (): void {
     expect($result)->not->toBeNull()
         ->and($result['result'])->toBe('failed')
         ->and($result['errors'])->toBe(2)
-        ->and($result['error_details'])->toHaveCount(2)
-        ->and($result['error_details'][0]['file'])->toBe('/src/Foo.php')
-        ->and($result['error_details'][0]['line'])->toBe(17)
-        ->and($result['error_details'][0]['message'])->toBe('No type specified')
-        ->and($result['error_details'][0]['identifier'])->toBe('missingType.parameter')
-        ->and($result['error_details'][1]['identifier'])->toBe('property.notFound');
+        ->and($result['error_details'])->toHaveKey('/src/Foo.php')
+        ->and($result['error_details']['/src/Foo.php'])->toHaveCount(2)
+        ->and($result['error_details']['/src/Foo.php'][0]['line'])->toBe(17)
+        ->and($result['error_details']['/src/Foo.php'][0]['message'])->toBe('No type specified')
+        ->and($result['error_details']['/src/Foo.php'][0]['identifier'])->toBe('missingType.parameter')
+        ->and($result['error_details']['/src/Foo.php'][1]['identifier'])->toBe('property.notFound');
 });
 
 it('defaults identifier to unknown when missing', function (): void {
@@ -100,7 +100,7 @@ it('defaults identifier to unknown when missing', function (): void {
     $result = phpstanParse($json);
 
     expect($result)->not->toBeNull()
-        ->and($result['error_details'][0]['identifier'])->toBe('unknown');
+        ->and($result['error_details']['/src/Foo.php'][0]['identifier'])->toBe('unknown');
 });
 
 it('captures general errors', function (): void {
@@ -138,7 +138,7 @@ it('combines file errors and general errors', function (): void {
     expect($result)->not->toBeNull()
         ->and($result['result'])->toBe('failed')
         ->and($result['errors'])->toBe(2)
-        ->and($result['error_details'])->toHaveCount(1)
+        ->and($result['error_details']['/src/Foo.php'])->toHaveCount(1)
         ->and($result['general_errors'])->toHaveCount(1);
 });
 
@@ -165,8 +165,7 @@ it('includes tip and non-ignorable fields', function (): void {
     $result = phpstanParse($json);
 
     expect($result)->not->toBeNull()
-        ->and($result['error_details'][0])->toBe([
-            'file' => '/src/Foo.php',
+        ->and($result['error_details']['/src/Foo.php'][0])->toBe([
             'line' => 35,
             'message' => 'Access to undefined property',
             'identifier' => 'property.notFound',
@@ -194,7 +193,7 @@ it('strips leading non-json content like phpstan note lines', function (): void 
 it('truncates error details beyond 30 by default', function (): void {
     $messages = [];
     for ($i = 1; $i <= 50; $i++) {
-        $messages[] = ['message' => "Error {$i}", 'line' => $i * 5, 'identifier' => 'return.type'];
+        $messages[] = ['message' => 'Error '.$i, 'line' => $i * 5, 'identifier' => 'return.type'];
     }
 
     $json = (string) json_encode([
@@ -212,7 +211,8 @@ it('truncates error details beyond 30 by default', function (): void {
 
     expect($result)->not->toBeNull()
         ->and($result['errors'])->toBe(50)
-        ->and($result['error_details'])->toHaveCount(30)
+        ->and($result['error_details'])->toHaveKey('/src/Foo.php')
+        ->and($result['error_details']['/src/Foo.php'])->toHaveCount(30)
         ->and($result['truncated'])->toBeTrue()
         ->and($result['hint'])->toBe('Pass -v to see all errors.');
 });
@@ -223,7 +223,7 @@ it('shows all errors when verbose flag is set', function (): void {
 
     $messages = [];
     for ($i = 1; $i <= 50; $i++) {
-        $messages[] = ['message' => "Error {$i}", 'line' => $i * 5, 'identifier' => 'return.type'];
+        $messages[] = ['message' => 'Error '.$i, 'line' => $i * 5, 'identifier' => 'return.type'];
     }
 
     $json = (string) json_encode([
@@ -243,7 +243,7 @@ it('shows all errors when verbose flag is set', function (): void {
 
     expect($result)->not->toBeNull()
         ->and($result['errors'])->toBe(50)
-        ->and($result['error_details'])->toHaveCount(50)
+        ->and($result['error_details']['/src/Foo.php'])->toHaveCount(50)
         ->and($result)->not->toHaveKey('truncated')
         ->and($result)->not->toHaveKey('hint');
 });
@@ -251,7 +251,7 @@ it('shows all errors when verbose flag is set', function (): void {
 it('does not truncate when errors are at or below limit', function (): void {
     $messages = [];
     for ($i = 1; $i <= 30; $i++) {
-        $messages[] = ['message' => "Error {$i}", 'line' => $i * 5, 'identifier' => 'return.type'];
+        $messages[] = ['message' => 'Error '.$i, 'line' => $i * 5, 'identifier' => 'return.type'];
     }
 
     $json = (string) json_encode([
@@ -269,9 +269,38 @@ it('does not truncate when errors are at or below limit', function (): void {
 
     expect($result)->not->toBeNull()
         ->and($result['errors'])->toBe(30)
-        ->and($result['error_details'])->toHaveCount(30)
+        ->and($result['error_details']['/src/Foo.php'])->toHaveCount(30)
         ->and($result)->not->toHaveKey('truncated')
         ->and($result)->not->toHaveKey('hint');
+});
+
+it('truncates across multiple files', function (): void {
+    $messagesA = [];
+    for ($i = 1; $i <= 20; $i++) {
+        $messagesA[] = ['message' => 'Error A'.$i, 'line' => $i * 5, 'identifier' => 'return.type'];
+    }
+
+    $messagesB = [];
+    for ($i = 1; $i <= 20; $i++) {
+        $messagesB[] = ['message' => 'Error B'.$i, 'line' => $i * 5, 'identifier' => 'return.type'];
+    }
+
+    $json = (string) json_encode([
+        'totals' => ['errors' => 0, 'file_errors' => 40],
+        'files' => [
+            '/src/Foo.php' => ['errors' => 20, 'messages' => $messagesA],
+            '/src/Bar.php' => ['errors' => 20, 'messages' => $messagesB],
+        ],
+        'errors' => [],
+    ]);
+
+    $result = phpstanParse($json);
+
+    expect($result)->not->toBeNull()
+        ->and($result['errors'])->toBe(40)
+        ->and($result['truncated'])->toBeTrue()
+        ->and($result['error_details']['/src/Foo.php'])->toHaveCount(20)
+        ->and($result['error_details']['/src/Bar.php'])->toHaveCount(10);
 });
 
 it('handles multiple files with multiple errors', function (): void {
@@ -299,7 +328,9 @@ it('handles multiple files with multiple errors', function (): void {
 
     expect($result)->not->toBeNull()
         ->and($result['errors'])->toBe(3)
-        ->and($result['error_details'])->toHaveCount(3)
-        ->and($result['error_details'][0]['file'])->toBe('/src/Foo.php')
-        ->and($result['error_details'][2]['file'])->toBe('/src/Bar.php');
+        ->and($result['error_details'])->toHaveCount(2)
+        ->and($result['error_details'])->toHaveKey('/src/Foo.php')
+        ->and($result['error_details']['/src/Foo.php'])->toHaveCount(2)
+        ->and($result['error_details'])->toHaveKey('/src/Bar.php')
+        ->and($result['error_details']['/src/Bar.php'])->toHaveCount(1);
 });

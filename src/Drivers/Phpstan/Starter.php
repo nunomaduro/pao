@@ -54,16 +54,18 @@ final class Starter extends BaseStarter
             return null;
         }
 
-        /** @var list<array{file: string, line: int, message: string, identifier: string, ignorable?: bool, tip?: string}> $errorDetails */
+        /** @var array<string, list<array{line: int, message: string, identifier: string, ignorable?: bool, tip?: string}>> $errorDetails */
         $errorDetails = [];
+        $totalFileErrors = 0;
 
         /** @var array<string, array{errors: int, messages: list<array{message: string, line: int, identifier?: string, ignorable?: bool, tip?: string}>}> $files */
         $files = is_array($data['files'] ?? null) ? $data['files'] : [];
 
         foreach ($files as $file => $fileData) {
             foreach ($fileData['messages'] as $message) {
+                $totalFileErrors++;
+
                 $detail = [
-                    'file' => $file,
                     'line' => $message['line'],
                     'message' => $message['message'],
                     'identifier' => $message['identifier'] ?? 'unknown',
@@ -77,7 +79,7 @@ final class Starter extends BaseStarter
                     $detail['tip'] = $message['tip'];
                 }
 
-                $errorDetails[] = $detail;
+                $errorDetails[$file][] = $detail;
             }
         }
 
@@ -87,7 +89,7 @@ final class Starter extends BaseStarter
         /** @var list<string> $generalErrors */
         $generalErrors = array_values(array_filter($errors, static fn (string $error): bool => $error !== ''));
 
-        $totalErrors = count($errorDetails) + count($generalErrors);
+        $totalErrors = $totalFileErrors + count($generalErrors);
 
         /** @var array<string, mixed> $result */
         $result = [
@@ -99,8 +101,8 @@ final class Starter extends BaseStarter
             $verbose = $this->isVerbose();
             $limit = 30;
 
-            if (! $verbose && count($errorDetails) > $limit) {
-                $result['error_details'] = array_slice($errorDetails, 0, $limit);
+            if (! $verbose && $totalFileErrors > $limit) {
+                $result['error_details'] = $this->truncateGrouped($errorDetails, $limit);
                 $result['truncated'] = true;
                 $result['hint'] = 'Pass -v to see all errors.';
             } else {
@@ -115,13 +117,36 @@ final class Starter extends BaseStarter
         return $result;
     }
 
+    /**
+     * @param  array<string, list<array{line: int, message: string, identifier: string, ignorable?: bool, tip?: string}>>  $grouped
+     * @return array<string, list<array{line: int, message: string, identifier: string, ignorable?: bool, tip?: string}>>
+     */
+    private function truncateGrouped(array $grouped, int $limit): array
+    {
+        $result = [];
+        $count = 0;
+
+        foreach ($grouped as $file => $errors) {
+            foreach ($errors as $error) {
+                if ($count >= $limit) {
+                    break 2;
+                }
+
+                $result[$file][] = $error;
+                $count++;
+            }
+        }
+
+        return $result;
+    }
+
     private function isVerbose(): bool
     {
         /** @var array<int, string> $argv */
         $argv = $_SERVER['argv'] ?? [];
 
         foreach ($argv as $arg) {
-            if ($arg === '-v' || $arg === '-vv' || $arg === '-vvv' || $arg === '--verbose') {
+            if (in_array($arg, ['-v', '-vv', '-vvv', '--verbose'], true)) {
                 return true;
             }
         }
