@@ -191,6 +191,89 @@ it('strips leading non-json content like phpstan note lines', function (): void 
         ->and($result['errors'])->toBe(0);
 });
 
+it('truncates error details beyond 30 by default', function (): void {
+    $messages = [];
+    for ($i = 1; $i <= 50; $i++) {
+        $messages[] = ['message' => "Error {$i}", 'line' => $i * 5, 'identifier' => 'return.type'];
+    }
+
+    $json = (string) json_encode([
+        'totals' => ['errors' => 0, 'file_errors' => 50],
+        'files' => [
+            '/src/Foo.php' => [
+                'errors' => 50,
+                'messages' => $messages,
+            ],
+        ],
+        'errors' => [],
+    ]);
+
+    $result = phpstanParse($json);
+
+    expect($result)->not->toBeNull()
+        ->and($result['errors'])->toBe(50)
+        ->and($result['error_details'])->toHaveCount(30)
+        ->and($result['truncated'])->toBeTrue()
+        ->and($result['hint'])->toBe('Pass -v to see all errors.');
+});
+
+it('shows all errors when verbose flag is set', function (): void {
+    $originalArgv = $_SERVER['argv'] ?? [];
+    $_SERVER['argv'] = ['phpstan', 'analyse', '-v'];
+
+    $messages = [];
+    for ($i = 1; $i <= 50; $i++) {
+        $messages[] = ['message' => "Error {$i}", 'line' => $i * 5, 'identifier' => 'return.type'];
+    }
+
+    $json = (string) json_encode([
+        'totals' => ['errors' => 0, 'file_errors' => 50],
+        'files' => [
+            '/src/Foo.php' => [
+                'errors' => 50,
+                'messages' => $messages,
+            ],
+        ],
+        'errors' => [],
+    ]);
+
+    $result = phpstanParse($json);
+
+    $_SERVER['argv'] = $originalArgv;
+
+    expect($result)->not->toBeNull()
+        ->and($result['errors'])->toBe(50)
+        ->and($result['error_details'])->toHaveCount(50)
+        ->and($result)->not->toHaveKey('truncated')
+        ->and($result)->not->toHaveKey('hint');
+});
+
+it('does not truncate when errors are at or below limit', function (): void {
+    $messages = [];
+    for ($i = 1; $i <= 30; $i++) {
+        $messages[] = ['message' => "Error {$i}", 'line' => $i * 5, 'identifier' => 'return.type'];
+    }
+
+    $json = (string) json_encode([
+        'totals' => ['errors' => 0, 'file_errors' => 30],
+        'files' => [
+            '/src/Foo.php' => [
+                'errors' => 30,
+                'messages' => $messages,
+            ],
+        ],
+        'errors' => [],
+    ]);
+
+    $result = phpstanParse($json);
+
+    expect($result)->not->toBeNull()
+        ->and($result['errors'])->toBe(30)
+        ->and($result['error_details'])->toHaveCount(30)
+        ->and($result)->not->toHaveKey('truncated')
+        ->and($result)->not->toHaveKey('hint');
+});
+
 it('handles multiple files with multiple errors', function (): void {
     $json = (string) json_encode([
         'totals' => ['errors' => 0, 'file_errors' => 3],

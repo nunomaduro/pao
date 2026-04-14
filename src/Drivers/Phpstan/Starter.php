@@ -96,7 +96,16 @@ final class Starter extends BaseStarter
         ];
 
         if ($errorDetails !== []) {
-            $result['error_details'] = $errorDetails;
+            $verbose = $this->isVerbose();
+            $limit = 30;
+
+            if (! $verbose && count($errorDetails) > $limit) {
+                $result['error_details'] = array_slice($errorDetails, 0, $limit);
+                $result['truncated'] = true;
+                $result['hint'] = 'Pass -v to see all errors.';
+            } else {
+                $result['error_details'] = $errorDetails;
+            }
         }
 
         if ($generalErrors !== []) {
@@ -104,6 +113,20 @@ final class Starter extends BaseStarter
         }
 
         return $result;
+    }
+
+    private function isVerbose(): bool
+    {
+        /** @var array<int, string> $argv */
+        $argv = $_SERVER['argv'] ?? [];
+
+        foreach ($argv as $arg) {
+            if ($arg === '-v' || $arg === '-vv' || $arg === '-vvv' || $arg === '--verbose') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

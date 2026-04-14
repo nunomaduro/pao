@@ -52,3 +52,27 @@ it('passes through normal output without agent', function (): void {
     expect($raw)->not->toContain('"result"')
         ->and($raw)->toContain('Found 2 errors');
 });
+
+it('truncates error details when more than 30 errors', function (): void {
+    $process = runPhpstan('tests/Fixtures/Phpstan/many-errors/phpstan.neon');
+
+    $output = decodeOutput($process);
+
+    expect($output['result'])->toBe('failed')
+        ->and($output['errors'])->toBe(50)
+        ->and($output['error_details'])->toHaveCount(30)
+        ->and($output['truncated'])->toBeTrue()
+        ->and($output['hint'])->toBe('Pass -v to see all errors.');
+});
+
+it('shows all error details with verbose flag', function (): void {
+    $process = runPhpstan('tests/Fixtures/Phpstan/many-errors/phpstan.neon', extraArgs: ['-v']);
+
+    $output = decodeOutput($process);
+
+    expect($output['result'])->toBe('failed')
+        ->and($output['errors'])->toBe(50)
+        ->and($output['error_details'])->toHaveCount(50)
+        ->and($output)->not->toHaveKey('truncated')
+        ->and($output)->not->toHaveKey('hint');
+});
