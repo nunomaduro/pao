@@ -56,7 +56,7 @@ But the real win isn't just tokens — it's **structured, machine-readable outpu
 > **Requires [PHP 8.3+](https://php.net/releases/)** — Works with **PHPUnit 12-13**, **Pest 4-5**, **Paratest**, **PHPStan**, and **Laravel 12+**.
 
 ```bash
-composer require nunomaduro/pao:^0.1.5 --dev
+composer require nunomaduro/pao --dev
 ```
 
 That's it. PAO hooks into PHPUnit, Pest, Paratest, and PHPStan automatically through Composer's autoloader. For Laravel projects, a service provider is auto-discovered to clean Artisan command output.
