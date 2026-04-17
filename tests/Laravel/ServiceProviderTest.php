@@ -16,18 +16,6 @@ afterEach(function (): void {
     putenv('AI_AGENT');
 });
 
-it('binds PaoOutputStyle when in agent mode', function (): void {
-    $_SERVER['AI_AGENT'] = '1';
-    putenv('AI_AGENT=1');
-
-    $this->app->register(ServiceProvider::class, true);
-
-    expect($this->app->make(OutputStyle::class, [
-        'input' => new ArrayInput([]),
-        'output' => new NullOutput,
-    ]))->toBeInstanceOf(PaoOutputStyle::class);
-});
-
 it('does not bind PaoOutputStyle when not in agent mode', function (): void {
     $this->app->register(ServiceProvider::class, true);
 

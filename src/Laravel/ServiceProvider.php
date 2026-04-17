@@ -19,11 +19,15 @@ final class ServiceProvider extends LaravelServiceProvider
 {
     public function boot(): void
     {
+        if (isset($_SERVER['PAO_DISABLE'])) {
+            return;
+        }
+
         if (! $this->app->runningInConsole()) {
             return;
         }
 
-        if (isset($_SERVER['PAO_DISABLE'])) {
+        if ($this->app->runningUnitTests()) {
             return;
         }
 
