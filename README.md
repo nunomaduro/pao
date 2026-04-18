@@ -6,7 +6,7 @@
 
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/nunomaduro/pao/main/art/logo.png" alt="PAO" width="300">
+    <img src="./art/logo.png" alt="PAO" width="300">
     <p align="center">
         <a href="https://github.com/nunomaduro/pao/actions"><img alt="GitHub Workflow Status (master)" src="https://github.com/nunomaduro/pao/actions/workflows/tests.yml/badge.svg"></a>
         <a href="https://packagist.org/packages/nunomaduro/pao"><img alt="Total Downloads" src="https://img.shields.io/packagist/dt/nunomaduro/pao"></a>
