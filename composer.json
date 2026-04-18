@@ -17,18 +17,18 @@
         "brianium/paratest": "^7.20.0",
         "laravel/pint": "^1.29.0",
         "orchestra/testbench": "^10.11.0 || ^11.1.0",
-        "pestphp/pest": "^4.5.0 || ^5.0.0",
-        "pestphp/pest-plugin-type-coverage": "^4.0.3 || ^5.0.0",
+        "pestphp/pest": "^4.6.3 || ^5.0.0",
+        "pestphp/pest-plugin-type-coverage": "^4.0.4 || ^5.0.0",
         "phpstan/phpstan": "^2.1.50",
         "rector/rector": "^2.4.2",
-        "symfony/process": "^7.4.5 || ^8.1.0",
-        "symfony/var-dumper": "^7.4.6 || ^8.0.8"
+        "symfony/process": "^7.4.8 || ^8.1.0",
+        "symfony/var-dumper": "^7.4.8 || ^8.0.8"
     },
     "conflict": {
         "laravel/framework": "<12.0",
-        "nunomaduro/collision": "<8.9.2",
-        "phpunit/phpunit": "<12.5.14 || >=13.0.0 <13.0.5 || >=14.0",
-        "pestphp/pest": "<4.4.3 || >=6.0"
+        "nunomaduro/collision": "<8.9.3",
+        "phpunit/phpunit": "<12.5.23 || >=13.0.0 <13.1.7 || >=14.0",
+        "pestphp/pest": "<4.6.3 || >=6.0"
     },
     "autoload": {
         "files": [
