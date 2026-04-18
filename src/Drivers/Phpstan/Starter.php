@@ -14,6 +14,11 @@ use Pao\UserFilters\CaptureFilter;
  */
 final class Starter extends BaseStarter
 {
+    public function name(): string
+    {
+        return 'phpstan';
+    }
+
     public function start(): void
     {
         $this->registerNullFilter();

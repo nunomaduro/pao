@@ -62,6 +62,8 @@ register_shutdown_function(function (): void {
     }
 
     if ($result !== []) {
+        $result = ['tool' => $execution->driver->name()] + $result;
+
         fwrite(STDOUT, json_encode($result, JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR).PHP_EOL);
     }
 });

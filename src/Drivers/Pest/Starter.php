@@ -17,6 +17,11 @@ final class Starter extends BaseStarter
 {
     use TestResultParsable;
 
+    public function name(): string
+    {
+        return 'pest';
+    }
+
     public function start(): void
     {
         $this->registerNullFilter();

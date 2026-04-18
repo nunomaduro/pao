@@ -36,7 +36,7 @@ function decodeFromMixedOutput(Process $process): mixed
 {
     $raw = cleanOutput($process->getOutput());
 
-    $jsonStart = strpos($raw, '{"result":');
+    $jsonStart = strpos($raw, '{"tool":');
 
     if ($jsonStart !== false && $jsonStart > 0) {
         $raw = substr($raw, $jsonStart);
@@ -73,7 +73,7 @@ function decodeOutput(Process $process): mixed
     $decoded = json_decode($raw, associative: true);
 
     if ($decoded === null) {
-        $jsonStart = strpos($raw, '{"result":');
+        $jsonStart = strpos($raw, '{"tool":');
         if ($jsonStart !== false) {
             $decoded = json_decode(substr($raw, $jsonStart), associative: true);
         }
