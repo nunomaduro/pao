@@ -6,6 +6,7 @@ namespace Pao\Laravel;
 
 use Illuminate\Console\OutputStyle;
 use Pao\OutputCleaner;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,6 +17,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 final class PaoOutputStyle extends OutputStyle
 {
+    private static ?OutputFormatter $formatter = null;
+
     public function __construct(InputInterface $input, OutputInterface $output)
     {
         $output->setDecorated(false);
@@ -47,13 +50,13 @@ final class PaoOutputStyle extends OutputStyle
      */
     private function clean(string|iterable $messages): string|array
     {
+        $formatter = self::$formatter ??= new OutputFormatter(false);
+        $strip = fn (string $m): string => OutputCleaner::clean((string) $formatter->format($m));
+
         if (is_string($messages)) {
-            return OutputCleaner::clean($messages);
+            return $strip($messages);
         }
 
-        return array_values(array_map(
-            OutputCleaner::clean(...),
-            [...$messages],
-        ));
+        return array_values(array_map($strip, [...$messages]));
     }
 }
