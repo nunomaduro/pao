@@ -122,8 +122,6 @@ PHPStan output is also converted to structured JSON:
 }
 ```
 
-When all checks pass: `{"result":"passed","errors":0}`
-
 ## Contributing
 
 Thank you for considering contributing to Laravel! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
