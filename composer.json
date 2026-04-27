@@ -60,7 +60,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Pao\\Laravel\\ServiceProvider"
+                "Laravel\\Pao\\Laravel\\ServiceProvider"
             ]
         },
         "pest": {
