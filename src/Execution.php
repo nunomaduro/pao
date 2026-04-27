@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Laravel\Pao;
 
-use AgentDetector\AgentResult;
+use Laravel\AgentDetector\AgentResult;
 use Laravel\Pao\Contracts\Driver;
 use Laravel\Pao\Exceptions\ShouldNotHappenException;
 use Laravel\Pao\UserFilters\CaptureFilter;

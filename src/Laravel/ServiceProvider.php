@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Laravel\Pao\Laravel;
 
-use AgentDetector\AgentDetector;
 use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
+use Laravel\AgentDetector\AgentDetector;
 
 /**
  * @internal

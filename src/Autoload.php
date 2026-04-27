@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace Laravel\Pao;
 
-use AgentDetector\AgentDetector;
+use Laravel\AgentDetector\AgentDetector;
 
 /** @var array<int, string>|null $argv */
 $argv = $_SERVER['argv'] ?? null;
