@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pao\Drivers\Concerns;
+namespace Laravel\Pao\Drivers\Concerns;
 
 use Pest\Plugins\Parallel\Paratest\WrapperRunner;
 use PHPUnit\Event\Code\TestMethod;

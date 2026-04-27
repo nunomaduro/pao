@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /** @codeCoverageIgnoreStart */
 
-namespace Pao;
+namespace Laravel\Pao;
 
 use AgentDetector\AgentDetector;
 

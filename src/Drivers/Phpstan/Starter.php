@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pao\Drivers\Phpstan;
+namespace Laravel\Pao\Drivers\Phpstan;
 
-use Pao\Drivers\Starter as BaseStarter;
-use Pao\UserFilters\CaptureFilter;
+use Laravel\Pao\Drivers\Starter as BaseStarter;
+use Laravel\Pao\UserFilters\CaptureFilter;
 
 /**
  * @internal

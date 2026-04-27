@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pao\Laravel;
+namespace Laravel\Pao\Laravel;
 
 use Illuminate\Console\OutputStyle;
-use Pao\OutputCleaner;
+use Laravel\Pao\OutputCleaner;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

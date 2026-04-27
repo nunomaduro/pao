@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Pao\Laravel\PaoOutputStyle;
+use Laravel\Pao\Laravel\PaoOutputStyle;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;

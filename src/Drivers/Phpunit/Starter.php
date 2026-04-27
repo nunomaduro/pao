@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pao\Drivers\Phpunit;
+namespace Laravel\Pao\Drivers\Phpunit;
 
-use Pao\Drivers\Concerns\TestResultParsable;
-use Pao\Drivers\Starter as BaseStarter;
+use Laravel\Pao\Drivers\Concerns\TestResultParsable;
+use Laravel\Pao\Drivers\Starter as BaseStarter;
 
 /**
  * @internal

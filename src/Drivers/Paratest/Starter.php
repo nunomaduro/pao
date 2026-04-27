@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pao\Drivers\Paratest;
+namespace Laravel\Pao\Drivers\Paratest;
 
-use Pao\Drivers\Concerns\TestResultParsable;
-use Pao\Drivers\Starter as BaseStarter;
+use Laravel\Pao\Drivers\Concerns\TestResultParsable;
+use Laravel\Pao\Drivers\Starter as BaseStarter;
 
 /**
  * @internal

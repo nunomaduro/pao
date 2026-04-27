@@ -1,17 +1,31 @@
 {
-    "name": "nunomaduro/pao",
+    "name": "laravel/pao",
     "description": "Agent-optimized output for PHP testing tools",
-    "keywords": ["php", "phpunit", "pest", "paratest", "phpstan", "agent", "testing", "json", "dev"],
+    "keywords": [
+        "php",
+        "ai",
+        "phpunit",
+        "pest",
+        "paratest",
+        "phpstan",
+        "agent",
+        "testing",
+        "dev"
+    ],
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/laravel/pao/issues",
+        "source": "https://github.com/laravel/pao"
+    },
     "authors": [
         {
-            "name": "Nuno Maduro",
-            "email": "enunomaduro@gmail.com"
+            "name": "Taylor Otwell",
+            "email": "taylor@laravel.com"
         }
     ],
     "require": {
         "php": "^8.3",
-        "shipfastlabs/agent-detector": "^1.1.4"
+        "laravel/agent-detector": "^1.1.4"
     },
     "require-dev": {
         "brianium/paratest": "^7.20.0",
@@ -35,7 +49,7 @@
             "src/Autoload.php"
         ],
         "psr-4": {
-            "Pao\\": "src/"
+            "Laravel\\Pao\\": "src/"
         }
     },
     "autoload-dev": {
@@ -51,7 +65,7 @@
         },
         "pest": {
             "plugins": [
-                "Pao\\Drivers\\Pest\\Plugin"
+                "Laravel\\Pao\\Drivers\\Pest\\Plugin"
             ]
         }
     },

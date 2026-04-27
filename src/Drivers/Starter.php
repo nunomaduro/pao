@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Pao\Drivers;
+namespace Laravel\Pao\Drivers;
 
-use Pao\Contracts\Driver;
-use Pao\Execution;
-use Pao\UserFilters\CaptureFilter;
-use Pao\UserFilters\NullFilter;
+use Laravel\Pao\Contracts\Driver;
+use Laravel\Pao\Execution;
+use Laravel\Pao\UserFilters\CaptureFilter;
+use Laravel\Pao\UserFilters\NullFilter;
 
 /**
  * @internal

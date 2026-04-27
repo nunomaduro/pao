@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pao\Laravel;
+namespace Laravel\Pao\Laravel;
 
 use AgentDetector\AgentDetector;
 use Illuminate\Console\Events\CommandStarting;

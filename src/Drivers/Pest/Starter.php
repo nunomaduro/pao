@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Pao\Drivers\Pest;
+namespace Laravel\Pao\Drivers\Pest;
 
-use Pao\Drivers\Concerns\ProfileCollector;
-use Pao\Drivers\Concerns\TestResultParsable;
-use Pao\Drivers\Starter as BaseStarter;
+use Laravel\Pao\Drivers\Concerns\ProfileCollector;
+use Laravel\Pao\Drivers\Concerns\TestResultParsable;
+use Laravel\Pao\Drivers\Starter as BaseStarter;
 
 /**
  * @internal

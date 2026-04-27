@@ -1,5 +1,5 @@
 providers:
-  - Pao\Laravel\ServiceProvider
+  - Laravel\Pao\Laravel\ServiceProvider
 
 workbench:
   install: true

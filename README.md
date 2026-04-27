@@ -1,24 +1,16 @@
 <p align="center">
-    <a href="https://youtu.be/aOA1m9dFEww" target="_blank">
-        <img src="/art/video.jpg" alt="Overview PAO" style="width:70%;">
-    </a>
-</p>
-
-
-<p align="center">
     <img src="./art/logo.png" alt="PAO" width="300">
     <p align="center">
-        <a href="https://github.com/nunomaduro/pao/actions"><img alt="GitHub Workflow Status (master)" src="https://github.com/nunomaduro/pao/actions/workflows/tests.yml/badge.svg"></a>
-        <a href="https://packagist.org/packages/nunomaduro/pao"><img alt="Total Downloads" src="https://img.shields.io/packagist/dt/nunomaduro/pao"></a>
-        <a href="https://packagist.org/packages/nunomaduro/pao"><img alt="Latest Version" src="https://img.shields.io/packagist/v/nunomaduro/pao"></a>
-        <a href="https://packagist.org/packages/nunomaduro/pao"><img alt="License" src="https://img.shields.io/packagist/l/nunomaduro/pao"></a>
-        <a href="https://youtube.com/@nunomaduro?sub_confirmation=1"><img alt="YouTube Channel Subscribers" src="https://img.shields.io/youtube/channel/subscribers/UCO_hYZF2gb_CyG5sA7ArlGg?style=flat&label=youtube&color=brightgreen"></a>
+        <a href="https://github.com/laravel/pao/actions"><img alt="GitHub Workflow Status (main)" src="https://github.com/laravel/pao/actions/workflows/tests.yml/badge.svg"></a>
+        <a href="https://packagist.org/packages/laravel/pao"><img alt="Total Downloads" src="https://img.shields.io/packagist/dt/laravel/pao"></a>
+        <a href="https://packagist.org/packages/laravel/pao"><img alt="Latest Version" src="https://img.shields.io/packagist/v/laravel/pao"></a>
+        <a href="https://packagist.org/packages/laravel/pao"><img alt="License" src="https://img.shields.io/packagist/l/laravel/pao"></a>
     </p>
 </p>
 
-------
+## Introduction
 
-**PAO** is agent-optimized output for PHP tools. It works with any PHP project — **Laravel**, **Symfony**, **Laminas**, **vanilla PHP**, or anything else that uses **PHPUnit**, **Pest**, **Paratest**, **PHPStan**, or **Laravel Artisan**.
+**Laravel PAO** is agent-optimized output for PHP tools. It works with any PHP project — **Laravel**, **Symfony**, **Laminas**, **vanilla PHP**, or anything else that uses **PHPUnit**, **Pest**, **Paratest**, **PHPStan**, or **Laravel Artisan**.
 
 It detects when your tools are running inside an AI agent — **Claude Code**, **Cursor**, **Devin**, **Gemini CLI**, and others — and replaces the verbose, human-readable output with compact, super minimal, structured JSON. For Laravel Artisan commands, it strips ANSI colors, box-drawing characters, and excess whitespace. Zero config — just install and it works.
 
@@ -57,7 +49,7 @@ But the real win isn't just tokens — it's **structured, machine-readable outpu
 > **Requires [PHP 8.3+](https://php.net/releases/)** — Works with **PHPUnit 12-13**, **Pest 4-5**, **Paratest**, **PHPStan**, and **Laravel 12+**.
 
 ```bash
-composer require nunomaduro/pao --dev
+composer require laravel/pao --dev
 ```
 
 That's it. PAO hooks into PHPUnit, Pest, Paratest, and PHPStan automatically through Composer's autoloader. For Laravel projects, a service provider is auto-discovered to clean Artisan command output.
@@ -159,6 +151,18 @@ PHPStan output is also converted to structured JSON:
 
 When all checks pass: `{"result":"passed","errors":0}`
 
----
+## Contributing
 
-**PAO** was created by **[Nuno Maduro](https://x.com/enunomaduro)** under the **[MIT license](https://opensource.org/licenses/MIT)**.
+Thank you for considering contributing to Laravel! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+
+## Code of Conduct
+
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+
+## Security Vulnerabilities
+
+Please review [our security policy](https://github.com/laravel/pao/security/policy) on how to report security vulnerabilities.
+
+## License
+
+The Laravel PAO is open-sourced software licensed under the [MIT license](LICENSE.md).

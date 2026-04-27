@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pao\Drivers\Concerns;
+namespace Laravel\Pao\Drivers\Concerns;
 
 use PHPUnit\Event\Code\TestMethod;
 use PHPUnit\Event\Telemetry\HRTime;

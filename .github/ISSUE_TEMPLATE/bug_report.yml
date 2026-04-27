@@ -1,0 +1,39 @@
+name: Bug Report
+description: "Report something that's broken."
+body:
+  - type: markdown
+    attributes:
+      value: "If you notice improper DocBlock, PHPStan, or IDE warnings while using Agent Detector, do not create a GitHub issue. Instead, please submit a pull request to fix the problem."
+  - type: input
+    attributes:
+      label: Agent Detector Version
+      description: Provide the Agent Detector version that you are using.
+      placeholder: 1.1.4
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: PHP Version
+      description: Provide the PHP version that you are using.
+      placeholder: 8.2.0
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Operating System
+      description: Provide the operating system you are running on.
+      placeholder: macOS 14.5
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Description
+      description: Provide a detailed description of the issue you are facing.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps To Reproduce
+      description: Provide detailed steps to reproduce your issue, including the agent or environment you are detecting against.
+    validations:
+      required: true

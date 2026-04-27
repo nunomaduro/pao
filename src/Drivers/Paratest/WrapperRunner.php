@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pao\Drivers\Paratest;
+namespace Laravel\Pao\Drivers\Paratest;
 
-use Pao\Drivers\Concerns\ProfileCollector;
-use Pao\Execution;
+use Laravel\Pao\Drivers\Concerns\ProfileCollector;
+use Laravel\Pao\Execution;
 use ParaTest\Options;
 use ParaTest\RunnerInterface;
 use ParaTest\WrapperRunner\ResultPrinter;

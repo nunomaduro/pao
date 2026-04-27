@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pao\Contracts;
+namespace Laravel\Pao\Contracts;
 
 /**
  * @internal

@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Illuminate\Console\OutputStyle;
-use Pao\Laravel\PaoOutputStyle;
-use Pao\Laravel\ServiceProvider;
+use Laravel\Pao\Laravel\PaoOutputStyle;
+use Laravel\Pao\Laravel\ServiceProvider;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Tests\Laravel\TestCase;

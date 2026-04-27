@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pao\UserFilters;
+namespace Laravel\Pao\UserFilters;
 
 use php_user_filter;
 

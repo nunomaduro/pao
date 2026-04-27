@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Pao\Drivers\Pest;
+namespace Laravel\Pao\Drivers\Pest;
 
-use Pao\Execution;
+use Laravel\Pao\Execution;
 use Pest\Contracts\Plugins\HandlesArguments;
 
 /**

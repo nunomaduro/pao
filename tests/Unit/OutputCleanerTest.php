@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Pao\OutputCleaner;
+use Laravel\Pao\OutputCleaner;
 
 it('strips ANSI escape codes', function (): void {
     expect(OutputCleaner::clean("\e[32mSuccess\e[0m"))->toBe('Success');

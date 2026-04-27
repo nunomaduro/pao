@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Pao\Drivers\Phpstan\Starter;
-use Pao\UserFilters\CaptureFilter;
+use Laravel\Pao\Drivers\Phpstan\Starter;
+use Laravel\Pao\UserFilters\CaptureFilter;
 
 function phpstanParse(string $input): ?array
 {

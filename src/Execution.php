@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Pao;
+namespace Laravel\Pao;
 
 use AgentDetector\AgentResult;
-use Pao\Contracts\Driver;
-use Pao\Exceptions\ShouldNotHappenException;
-use Pao\UserFilters\CaptureFilter;
+use Laravel\Pao\Contracts\Driver;
+use Laravel\Pao\Exceptions\ShouldNotHappenException;
+use Laravel\Pao\UserFilters\CaptureFilter;
 
 /**
  * @internal

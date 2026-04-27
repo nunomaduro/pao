@@ -31,6 +31,6 @@ class TestCase extends BaseTestCase
      */
     public function ignorePackageDiscoveriesFrom(): array
     {
-        return ['nunomaduro/pao'];
+        return ['laravel/pao'];
     }
 }
