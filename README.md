@@ -128,6 +128,8 @@ Rector is automatically run with its native JSON output format:
 
 ```json
 {
+  "tool": "rector",
+  "result": "failed",
   "totals": {
     "changed_files": 1,
     "errors": 0

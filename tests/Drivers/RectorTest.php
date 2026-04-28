@@ -9,7 +9,8 @@ it('outputs json for clean code', function (): void {
 
     $output = decodeOutput($process);
 
-    expect($output)->not->toHaveKey('tool')
+    expect($output['tool'])->toBe('rector')
+        ->and($output['result'])->toBe('passed')
         ->and($output['totals']['changed_files'])->toBe(0)
         ->and($output['totals']['errors'])->toBe(0)
         ->and($output)->not->toHaveKey('file_diffs')
@@ -21,7 +22,8 @@ it('outputs json for code with changes', function (): void {
 
     $output = decodeOutput($process);
 
-    expect($output)->not->toHaveKey('tool')
+    expect($output['tool'])->toBe('rector')
+        ->and($output['result'])->toBe('failed')
         ->and($output['totals']['changed_files'])->toBe(1)
         ->and($output['totals']['errors'])->toBe(0)
         ->and($output['file_diffs'])->toHaveCount(1)
