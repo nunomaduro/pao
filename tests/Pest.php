@@ -20,14 +20,12 @@ function buildAgentEnvironment(bool $withAgent = true): array
 
 function runWith(string $binary, string $filter, bool $withAgent = true, array $extraArgs = [], string $config = 'tests/Fixtures/phpunit.xml'): Process
 {
-    $env = buildAgentEnvironment($withAgent);
-
     $command = [PHP_BINARY, 'vendor/bin/'.$binary, '--configuration', $config, '--filter', $filter, ...$extraArgs];
 
     $process = new Process(
         command: $command,
         cwd: dirname(__DIR__),
-        env: $env,
+        env: buildAgentEnvironment($withAgent),
     );
 
     $process->run();
@@ -57,14 +55,12 @@ function decodeFromMixedOutput(Process $process): mixed
 
 function runPhpstan(string $configPath, bool $withAgent = true, array $extraArgs = []): Process
 {
-    $env = buildAgentEnvironment($withAgent);
-
     $command = [PHP_BINARY, 'vendor/bin/phpstan', 'analyse', '--configuration', $configPath, ...$extraArgs];
 
     $process = new Process(
         command: $command,
         cwd: dirname(__DIR__),
-        env: $env,
+        env: buildAgentEnvironment($withAgent),
     );
 
     $process->run();
