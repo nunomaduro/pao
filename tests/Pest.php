@@ -4,13 +4,35 @@ declare(strict_types=1);
 
 use Symfony\Component\Process\Process;
 
-function runWith(string $binary, string $filter, bool $withAgent = true, array $extraArgs = [], string $config = 'tests/Fixtures/phpunit.xml'): Process
+function paoAgentEnv(bool $withAgent): array
 {
-    $env = [
+    return [
         'AI_AGENT' => $withAgent ? '1' : false,
+        'CURSOR_AGENT' => false,
         'CLAUDECODE' => false,
         'CLAUDE_CODE' => false,
+        'GEMINI_CLI' => false,
+        'CODEX_SANDBOX' => false,
+        'CODEX_CI' => false,
+        'CODEX_THREAD_ID' => false,
+        'AUGMENT_AGENT' => false,
+        'OPENCODE_CLIENT' => false,
+        'OPENCODE' => false,
+        'AMP_CURRENT_THREAD_ID' => false,
+        'REPL_ID' => false,
+        'COPILOT_MODEL' => false,
+        'COPILOT_ALLOW_ALL' => false,
+        'COPILOT_GITHUB_TOKEN' => false,
+        'COPILOT_CLI' => false,
+        'ANTIGRAVITY_AGENT' => false,
+        'PI_CODING_AGENT' => false,
+        'KIRO_AGENT_PATH' => false,
     ];
+}
+
+function runWith(string $binary, string $filter, bool $withAgent = true, array $extraArgs = [], string $config = 'tests/Fixtures/phpunit.xml'): Process
+{
+    $env = paoAgentEnv($withAgent);
 
     $command = [PHP_BINARY, 'vendor/bin/'.$binary, '--configuration', $config, '--filter', $filter, ...$extraArgs];
 
@@ -47,13 +69,26 @@ function decodeFromMixedOutput(Process $process): mixed
 
 function runPhpstan(string $configPath, bool $withAgent = true, array $extraArgs = []): Process
 {
-    $env = [
-        'AI_AGENT' => $withAgent ? '1' : false,
-        'CLAUDECODE' => false,
-        'CLAUDE_CODE' => false,
-    ];
+    $env = paoAgentEnv($withAgent);
 
     $command = [PHP_BINARY, 'vendor/bin/phpstan', 'analyse', '--configuration', $configPath, ...$extraArgs];
+
+    $process = new Process(
+        command: $command,
+        cwd: dirname(__DIR__),
+        env: $env,
+    );
+
+    $process->run();
+
+    return $process;
+}
+
+function runRector(string $configPath, bool $withAgent = true, array $extraArgs = []): Process
+{
+    $env = paoAgentEnv($withAgent);
+
+    $command = [PHP_BINARY, 'vendor/bin/rector', 'process', '--config', $configPath, ...$extraArgs];
 
     $process = new Process(
         command: $command,

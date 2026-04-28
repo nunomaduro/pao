@@ -51,6 +51,7 @@ final class Execution
             'pest' => new Drivers\Pest\Starter,
             'phpstan', 'phpstan.phar' => new Drivers\Phpstan\Starter,
             'phpunit' => new Drivers\Phpunit\Starter,
+            'rector' => new Drivers\Rector\Starter,
             default => null,
         };
 
