@@ -8,6 +8,7 @@
         "pest",
         "paratest",
         "phpstan",
+        "rector",
         "agent",
         "testing",
         "dev"
