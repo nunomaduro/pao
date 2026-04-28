@@ -2,22 +2,30 @@
 
 declare(strict_types=1);
 
+use Laravel\AgentDetector\AgentDetector;
 use Symfony\Component\Process\Process;
+
+/**
+ * @return array<string, mixed>
+ */
+function buildAgentEnvironment(bool $withAgent = true): array
+{
+    $env = ['AI_AGENT' => $withAgent ? '1' : false];
+    foreach (array_keys(AgentDetector::AGENT_ENV_VARS) as $key) {
+        $env[$key] = false;
+    }
+
+    return $env;
+}
 
 function runWith(string $binary, string $filter, bool $withAgent = true, array $extraArgs = [], string $config = 'tests/Fixtures/phpunit.xml'): Process
 {
-    $env = [
-        'AI_AGENT' => $withAgent ? '1' : false,
-        'CLAUDECODE' => false,
-        'CLAUDE_CODE' => false,
-    ];
-
     $command = [PHP_BINARY, 'vendor/bin/'.$binary, '--configuration', $config, '--filter', $filter, ...$extraArgs];
 
     $process = new Process(
         command: $command,
         cwd: dirname(__DIR__),
-        env: $env,
+        env: buildAgentEnvironment($withAgent),
     );
 
     $process->run();
@@ -47,18 +55,12 @@ function decodeFromMixedOutput(Process $process): mixed
 
 function runPhpstan(string $configPath, bool $withAgent = true, array $extraArgs = []): Process
 {
-    $env = [
-        'AI_AGENT' => $withAgent ? '1' : false,
-        'CLAUDECODE' => false,
-        'CLAUDE_CODE' => false,
-    ];
-
     $command = [PHP_BINARY, 'vendor/bin/phpstan', 'analyse', '--configuration', $configPath, ...$extraArgs];
 
     $process = new Process(
         command: $command,
         cwd: dirname(__DIR__),
-        env: $env,
+        env: buildAgentEnvironment($withAgent),
     );
 
     $process->run();
