@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
+use Laravel\AgentDetector\AgentDetector;
 use Symfony\Component\Process\Process;
 
 function runWith(string $binary, string $filter, bool $withAgent = true, array $extraArgs = [], string $config = 'tests/Fixtures/phpunit.xml'): Process
 {
-    $env = [
-        'AI_AGENT' => $withAgent ? '1' : false,
-        'CLAUDECODE' => false,
-        'CLAUDE_CODE' => false,
-    ];
+    $env = ['AI_AGENT' => $withAgent ? '1' : false];
+    foreach(array_keys(AgentDetector::AGENT_ENV_VARS) as $key) {
+        $env[$key] = false;
+    }
 
     $command = [PHP_BINARY, 'vendor/bin/'.$binary, '--configuration', $config, '--filter', $filter, ...$extraArgs];
 
