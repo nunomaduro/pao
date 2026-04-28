@@ -2,17 +2,18 @@
 
 declare(strict_types=1);
 
+use Rector\Php53\Rector\FuncCall\DirNameFileConstantToDirConstantRector;
+
 it('outputs json for clean code', function (): void {
     $process = runRector('tests/Fixtures/Rector/clean/rector.php', extraArgs: ['--dry-run']);
 
     $output = decodeOutput($process);
 
-    expect($output['tool'])->toBe('rector')
-        ->and($output['result'])->toBe('passed')
-        ->and($output['changed_files'])->toBe(0)
-        ->and($output['errors'])->toBe(0)
-        ->and($output)->not->toHaveKey('change_details')
-        ->and($output)->not->toHaveKey('error_details');
+    expect($output)->not->toHaveKey('tool')
+        ->and($output['totals']['changed_files'])->toBe(0)
+        ->and($output['totals']['errors'])->toBe(0)
+        ->and($output)->not->toHaveKey('file_diffs')
+        ->and($output)->not->toHaveKey('errors');
 });
 
 it('outputs json for code with changes', function (): void {
@@ -20,14 +21,14 @@ it('outputs json for code with changes', function (): void {
 
     $output = decodeOutput($process);
 
-    expect($output['tool'])->toBe('rector')
-        ->and($output['result'])->toBe('failed')
-        ->and($output['changed_files'])->toBe(1)
-        ->and($output['errors'])->toBe(0)
-        ->and($output['change_details'])->toHaveCount(1)
-        ->and($output['change_details'][0]['file'])->toEndWith('NeedsChange.php')
-        ->and($output['change_details'][0]['line'])->toBeGreaterThan(0)
-        ->and($output['change_details'][0]['applied_rectors'])->toContain('DirNameFileConstantToDirConstantRector');
+    expect($output)->not->toHaveKey('tool')
+        ->and($output['totals']['changed_files'])->toBe(1)
+        ->and($output['totals']['errors'])->toBe(0)
+        ->and($output['file_diffs'])->toHaveCount(1)
+        ->and($output['file_diffs'][0]['file'])->toEndWith('NeedsChange.php')
+        ->and($output['file_diffs'][0]['diff'])->toContain("-        return [dirname(__FILE__), 'change'];")
+        ->and($output['file_diffs'][0]['applied_rectors'])->toContain(DirNameFileConstantToDirConstantRector::class)
+        ->and($output['changed_files'])->toContain('tests/Fixtures/Rector/changes/src/NeedsChange.php');
 });
 
 it('passes through normal output without agent', function (): void {

@@ -124,20 +124,25 @@ PHPStan output is also converted to structured JSON:
 
 ### Rector
 
-Rector dry-run output is converted to compact JSON with changed files, first changed lines, and applied rules:
+Rector is automatically run with its native JSON output format:
 
 ```json
 {
-  "tool": "rector",
-  "result": "failed",
-  "changed_files": 1,
-  "errors": 0,
-  "change_details": [
+  "totals": {
+    "changed_files": 1,
+    "errors": 0
+  },
+  "file_diffs": [
     {
       "file": "app/Models/User.php",
-      "line": 17,
-      "applied_rectors": ["LongArrayToShortArrayRector"]
+      "diff": "--- Original\n+++ New\n@@ ...",
+      "applied_rectors": [
+        "Rector\\Php54\\Rector\\Array_\\LongArrayToShortArrayRector"
+      ]
     }
+  ],
+  "changed_files": [
+    "app/Models/User.php"
   ]
 }
 ```
