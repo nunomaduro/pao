@@ -8,7 +8,7 @@ use Symfony\Component\Process\Process;
 function runWith(string $binary, string $filter, bool $withAgent = true, array $extraArgs = [], string $config = 'tests/Fixtures/phpunit.xml'): Process
 {
     $env = ['AI_AGENT' => $withAgent ? '1' : false];
-    foreach(array_keys(AgentDetector::AGENT_ENV_VARS) as $key) {
+    foreach (array_keys(AgentDetector::AGENT_ENV_VARS) as $key) {
         $env[$key] = false;
     }
 
