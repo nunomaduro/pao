@@ -10,10 +10,11 @@ class TestCase extends BaseTestCase
 {
     protected function setUp(): void
     {
-        unset($_SERVER['AI_AGENT'], $_SERVER['PAO_DISABLE'], $_SERVER['CLAUDE_CODE'], $_SERVER['CLAUDECODE']);
+        unset($_SERVER['AI_AGENT'], $_SERVER['PAO_DISABLE'], $_SERVER['PAO_FORCE'], $_SERVER['CLAUDE_CODE'], $_SERVER['CLAUDECODE']);
         putenv('CLAUDE_CODE');
         putenv('CLAUDECODE');
         putenv('PAO_DISABLE');
+        putenv('PAO_FORCE');
 
         parent::setUp();
     }
