@@ -12,7 +12,7 @@ use Tests\Laravel\TestCase;
 uses(TestCase::class);
 
 afterEach(function (): void {
-    unset($_SERVER['AI_AGENT'], $_SERVER['PAO_DISABLE']);
+    unset($_SERVER['AI_AGENT'], $_SERVER['PAO_DISABLE'], $_SERVER['PAO_FORCE']);
     putenv('AI_AGENT');
 });
 
