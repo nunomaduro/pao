@@ -21,7 +21,7 @@ if (isset($_SERVER['PAO_DISABLE'])) {
 
 $agent = AgentDetector::detect();
 
-if (! $agent->isAgent) {
+if (! $agent->isAgent && ! isset($_SERVER['PAO_FORCE'])) {
     return;
 }
 

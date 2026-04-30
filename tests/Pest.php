@@ -18,14 +18,14 @@ function buildAgentEnvironment(bool $withAgent = true): array
     return $env;
 }
 
-function runWith(string $binary, string $filter, bool $withAgent = true, array $extraArgs = [], string $config = 'tests/Fixtures/phpunit.xml'): Process
+function runWith(string $binary, string $filter, bool $withAgent = true, array $extraArgs = [], string $config = 'tests/Fixtures/phpunit.xml', array $extraEnv = []): Process
 {
     $command = [PHP_BINARY, 'vendor/bin/'.$binary, '--configuration', $config, '--filter', $filter, ...$extraArgs];
 
     $process = new Process(
         command: $command,
         cwd: dirname(__DIR__),
-        env: buildAgentEnvironment($withAgent),
+        env: array_merge(buildAgentEnvironment($withAgent), $extraEnv),
     );
 
     $process->run();
