@@ -6,8 +6,6 @@
 <testsuites>
         <testsuite name="default">
             <directory suffix="Test.php">.</directory>
-            <exclude>./Pest</exclude>
-            <exclude>./FatalRedeclaration</exclude>
         </testsuite>
     </testsuites>
 </phpunit>
