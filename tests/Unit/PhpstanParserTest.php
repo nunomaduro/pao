@@ -74,8 +74,8 @@ it('includes agent instructions when file errors are present', function (): void
 
     expect($result)->not->toBeNull()
         ->and($result)->toHaveKey('instructions')
-        ->and($result['instructions'])->toBeArray()
-        ->and($result['instructions'][0])->toContain('identifier')
+        ->and($result['instructions'])->toBeString()
+        ->and($result['instructions'])->toContain('Each error has an associated identifier')
         ->and($result['instructions'])->toContain('Do not add type casts just to silence errors.');
 });
 
