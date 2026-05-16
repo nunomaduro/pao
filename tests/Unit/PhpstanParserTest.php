@@ -52,7 +52,44 @@ it('returns passed for zero errors', function (): void {
         ->and($result['result'])->toBe('passed')
         ->and($result['errors'])->toBe(0)
         ->and($result)->not->toHaveKey('error_details')
-        ->and($result)->not->toHaveKey('general_errors');
+        ->and($result)->not->toHaveKey('general_errors')
+        ->and($result)->not->toHaveKey('instructions');
+});
+
+it('includes agent instructions when file errors are present', function (): void {
+    $json = (string) json_encode([
+        'totals' => ['errors' => 0, 'file_errors' => 1],
+        'files' => [
+            '/src/Foo.php' => [
+                'errors' => 1,
+                'messages' => [
+                    ['message' => 'Some error', 'line' => 5, 'identifier' => 'return.type'],
+                ],
+            ],
+        ],
+        'errors' => [],
+    ]);
+
+    $result = phpstanParse($json);
+
+    expect($result)->not->toBeNull()
+        ->and($result)->toHaveKey('instructions')
+        ->and($result['instructions'])->toBeString()
+        ->and($result['instructions'])->toContain('Each error has an associated identifier')
+        ->and($result['instructions'])->toContain('Do not add type casts just to silence errors.');
+});
+
+it('does not include instructions for general errors only', function (): void {
+    $json = (string) json_encode([
+        'totals' => ['errors' => 1, 'file_errors' => 0],
+        'files' => [],
+        'errors' => ['Autoload file not found'],
+    ]);
+
+    $result = phpstanParse($json);
+
+    expect($result)->not->toBeNull()
+        ->and($result)->not->toHaveKey('instructions');
 });
 
 it('returns failed with error details', function (): void {

@@ -113,6 +113,8 @@ final class Starter extends BaseStarter
             } else {
                 $result['error_details'] = $errorDetails;
             }
+
+            $result['instructions'] = $this->agentInstructions();
         }
 
         if ($generalErrors !== []) {
@@ -120,6 +122,13 @@ final class Starter extends BaseStarter
         }
 
         return $result;
+    }
+
+    private function agentInstructions(): string
+    {
+        return <<<'TXT'
+            Each error has an associated identifier, like `argument.type` or `return.missing`. Each error identifier has documentation at URL https://phpstan.org/error-identifiers/<identifier>, which contains a code example, explanation why it is an error, and instructions on how to fix it. Before fixing the error, fetch the documentation page for its identifier. The error usually indicates a real bug or incorrect type in the code. Fix the underlying cause, do not just make the error go away. Do not add `@phpstan-ignore` comments, `@phpstan-ignore-next-line` comments, or baseline entries to suppress the error. Do not use assert() or inline @var PHPDoc tag to override PHPStan's inferred type. Do not add type casts just to silence errors. Do not widen parameter or return types just to make the error go away.
+            TXT;
     }
 
     /**
