@@ -76,6 +76,19 @@ it('outputs json for risky tests', function (): void {
         ->and($output['risky'])->toBe(1);
 });
 
+it('outputs failed json when no pest tests match', function (): void {
+    $process = runWith('pest', 'definitely no matching test', config: 'tests/Fixtures/Pest/phpunit.xml');
+
+    expect($process->getExitCode())->not->toBe(0);
+
+    $output = decodeOutput($process);
+
+    expect($output['result'])->toBe('failed')
+        ->and($output['tests'])->toBe(0)
+        ->and($output['passed'])->toBe(0)
+        ->and($output['raw'])->toContain('No tests found.');
+});
+
 it('outputs json for data provider tests', function (): void {
     $output = decodeOutput(runWith('pest', 'DataProviderTest'));
 

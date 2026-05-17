@@ -125,6 +125,7 @@ trait TestResultParsable
         $notices = $testResult->numberOfNotices();
         $risky = $testResult->numberOfTestsWithTestConsideredRiskyEvents();
         $ignoredByBaseline = $testResult->numberOfIssuesIgnoredByBaseline();
+        $hasNoTests = $tests === 0;
 
         $durationMs = ProfileCollector::durationMs();
 
@@ -172,12 +173,16 @@ trait TestResultParsable
 
         /** @var array<string, mixed> $result */
         $result = [
-            'result' => $testResult->wasSuccessful() ? 'passed' : 'failed',
+            'result' => $testResult->wasSuccessful() && ! $hasNoTests ? 'passed' : 'failed',
             'tests' => $tests,
             'passed' => $tests - $failedCount - $erroredCount - $skipped,
             'assertions' => $assertions,
             'duration_ms' => $durationMs,
         ];
+
+        if ($hasNoTests) {
+            $result['raw'] = ['No tests found.'];
+        }
 
         if ($failedCount > 0) {
             $result['failed'] = $failedCount;
